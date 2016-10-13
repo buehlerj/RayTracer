@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class Model {
-	static String header = "";
-	static ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-	static ArrayList<Face> faces = new ArrayList<Face>();
-	static int number_of_vertices = 0;
-	static int number_of_faces = 0;
+	String header = "";
+	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+	ArrayList<Face> faces = new ArrayList<Face>();
+	int number_of_vertices = 0;
+	int number_of_faces = 0;
 
 	Model() {}
 
@@ -62,19 +62,30 @@ public class Model {
 	}
 
 	public boolean write(String output_file_name, String name_modifier) {
+		if (name_modifier.length() > 0)
+			name_modifier = "_" + name_modifier;
 		String[] file_split = output_file_name.split("\\.");
 		String new_file_name = "";
 		for (int i = 0; i < file_split.length - 1; i++) {
 			new_file_name += file_split[i];
 		}
-		new_file_name += "_" + name_modifier + "." + file_split[file_split.length - 1];
+		new_file_name += name_modifier + "." + file_split[file_split.length - 1];
 		try {
 			PrintWriter output = new PrintWriter(new_file_name);
-			output.print(header);
-			for (Vertex vertex : vertices)
-				output.println(vertex);
-			for (Face face : faces)
-				output.println(face);
+			switch (file_split[file_split.length - 1]) {
+			case "ply":
+				output.print(header);
+				for (Vertex vertex : vertices)
+					output.println(vertex);
+				for (Face face : faces)
+					output.println(face);
+				break;
+			case "ppm":
+				output.print("unimplemented ppm");
+				break;
+			default:
+				return false;
+			}
 			output.close();
 		} catch (FileNotFoundException e) {System.err.println("Problem Writing file: " + new_file_name);}
 		return true;
