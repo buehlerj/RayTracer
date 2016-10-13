@@ -1,8 +1,8 @@
 
 public class Camera {
-	private Vector eye;
-	private Vector look;
-	private Vector up;
+	private Vertex eye;
+	private Vertex look;
+	private Vertex up;
 	private int d;
 	private int boundu;
 	private int boundr;
@@ -13,5 +13,9 @@ public class Camera {
 
 	Camera() {
 		
+	}
+
+	public boolean read(String a) {
+		return true;		
 	}
 }

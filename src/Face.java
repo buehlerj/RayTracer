@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 
 public class Face {
-	ArrayList<Integer> vector_indices = new ArrayList<Integer>();
+	ArrayList<Integer> vertex_indices = new ArrayList<Integer>();
 
-	Face(ArrayList<Integer> vector_indices) {
-		this.vector_indices = vector_indices;
+	Face(ArrayList<Integer> vertex_indices) {
+		this.vertex_indices = vertex_indices;
 	}
 
 	public String toString() {
 		String faces = "";
-		for (int index : vector_indices)
+		for (int index : vertex_indices)
 			faces += index + " ";
 		return faces;
 	}

@@ -1,41 +1,41 @@
 import java.text.DecimalFormat;
 
-public class Vector {
+public class Vertex {
 	private double x = 0.0;
 	private double y = 0.0;
 	private double z = 0.0;
 
-	Vector() {
+	Vertex() {
 	}
 
-	Vector(double x, double y, double z) {
+	Vertex(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public void add(Vector other_Vector) {
-		x += other_Vector.x;
-		y += other_Vector.y;
-		z += other_Vector.z;
+	public void add(Vertex other_vector) {
+		x += other_vector.x;
+		y += other_vector.y;
+		z += other_vector.z;
 	}
 
-	public void subtract(Vector other_Vector) {
-		x -= other_Vector.x;
-		y -= other_Vector.y;
-		z -= other_Vector.z;
+	public void subtract(Vertex other_vector) {
+		x -= other_vector.x;
+		y -= other_vector.y;
+		z -= other_vector.z;
 	}
 
-	public void divide(Vector other_Vector) {
-		x /= other_Vector.x;
-		y /= other_Vector.y;
-		z /= other_Vector.z;
+	public void divide(Vertex other_vector) {
+		x /= other_vector.x;
+		y /= other_vector.y;
+		z /= other_vector.z;
 	}
 
-	public void scale(Vector other_Vector) {
-		x *= other_Vector.x;
-		y *= other_Vector.y;
-		z *= other_Vector.z;
+	public void scale(Vertex other_vector) {
+		x *= other_vector.x;
+		y *= other_vector.y;
+		z *= other_vector.z;
 	}
 
 	public void squareRoot() {
@@ -61,7 +61,7 @@ public class Vector {
 		return df.format(x) + " " + df.format(y) + " " + df.format(z);
 	}
 
-	public String toStringVector() {
+	public String toStringVertex() {
 		DecimalFormat df = new DecimalFormat("#.######");
 		return "(" + df.format(x) + ", " + df.format(y) + ", " + df.format(z) + ")";
 	}
