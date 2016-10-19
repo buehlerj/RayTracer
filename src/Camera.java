@@ -3,9 +3,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Camera {
-	private Vertex eye;
-	private Vertex look;
-	private Vertex up;
+	private Vector eye;
+	private Vector look;
+	private Vector up;
 	private int d;
 	private int boundU;
 	private int boundR;
@@ -26,13 +26,13 @@ public class Camera {
 				String key_term = input.next();
 				switch (key_term) {
 				case "eye":
-					eye = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					eye = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "look":
-					look = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					look = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "up":
-					up = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					up = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "d":
 					d = input.nextInt();
@@ -60,15 +60,15 @@ public class Camera {
 		return true;
 	}
 
-	public Vertex getEye() {
+	public Vector getEye() {
 		return eye;
 	}
 
-	public Vertex getLook() {
+	public Vector getLook() {
 		return look;
 	}
 
-	public Vertex getUp() {
+	public Vector getUp() {
 		return up;
 	}
 
@@ -85,7 +85,7 @@ public class Camera {
 	}
 
 	public void takePicture() {
-		Vertex center_of_near_clipping_plane = new Vertex(eye.getX() + look.getX(), eye.getY() + look.getY(), eye.getZ() + look.getZ());
+		Vector center_of_near_clipping_plane = new Vector(eye.getX() + look.getX(), eye.getY() + look.getY(), eye.getZ() + look.getZ());
 
 	}
 }
