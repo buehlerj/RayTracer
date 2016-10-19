@@ -14,10 +14,6 @@ public class Camera {
 	private int resx;
 	private int resy;
 
-	Camera() {
-
-	}
-
 	public boolean read(String input_file_name) {
 		File input_file = new File(input_file_name);
 		try {
@@ -83,9 +79,5 @@ public class Camera {
 	public int[] getRes() {
 		return new int[] { resx, resy };
 	}
-
-	public void takePicture() {
-		Vector center_of_near_clipping_plane = new Vector(eye.getX() + look.getX(), eye.getY() + look.getY(), eye.getZ() + look.getZ());
-
-	}
 }
+

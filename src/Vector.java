@@ -77,3 +77,4 @@ public class Vector {
 		return "(" + df.format(x) + ", " + df.format(y) + ", " + df.format(z) + ")";
 	}
 }
+

@@ -18,4 +18,10 @@ public class Pixel {
 		DecimalFormat df = new DecimalFormat("#.######");
 		return df.format(r) + " " + df.format(g) + " " + df.format(b);
 	}
+
+	public void modify(double new_r, double new_g, double new_b) {
+		r = new_r;
+		g = new_g;
+		b = new_b;
+	}
 }
