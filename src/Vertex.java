@@ -56,6 +56,17 @@ public class Vertex {
 		return z;
 	}
 
+	public static double dotProduct(Vertex a, Vertex b) {
+		return (a.getX() * b.getX()) + (a.getY() * b.getY()) + (a.getZ() * b.getZ());
+	}
+
+	public static Vertex crossProduct(Vertex a, Vertex b) {
+		double i = (a.getY() * b.getZ()) - (a.getZ() * b.getY());
+		double j = (a.getX() * b.getZ()) - (a.getZ() * b.getX());
+		double k = (a.getX() * b.getY()) - (a.getY() * b.getX());
+		return new Vertex(i, -j, k);
+	}
+
 	public String toString() {
 		DecimalFormat df = new DecimalFormat("#.######");
 		return df.format(x) + " " + df.format(y) + " " + df.format(z);

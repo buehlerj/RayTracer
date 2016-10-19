@@ -10,6 +10,7 @@ D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_
 public class RayTracer {
 
 	public static void main(String[] args) {
+		testCode();
 		if (args.length < 3) {
 			System.err.println("Incorrect number of argments: " + args.length);
 			System.exit(-1);
@@ -24,7 +25,10 @@ public class RayTracer {
 			if (!model.read(model_file_name)) {System.exit(-1);}
 			models.add(model);
 		}
-
 		models.get(0).write(args[args.length - 1], "0");
+	}
+
+	public static void testCode() {
+
 	}
 }

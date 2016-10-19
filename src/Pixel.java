@@ -1,14 +1,21 @@
+import java.text.DecimalFormat;
 
 public class Pixel {
-	public int r = 239;
-	public int g = 239;
-	public int b = 239;
+	public double r = 239;
+	public double g = 239;
+	public double b = 239;
 
-	Pixel() {}
-	
-	Pixel(int r, int g, int b) {
+	Pixel() {
+	}
+
+	Pixel(double r, double g, double b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
+	}
+
+	public String toString() {
+		DecimalFormat df = new DecimalFormat("#.######");
+		return df.format(r) + " " + df.format(g) + " " + df.format(b);
 	}
 }
