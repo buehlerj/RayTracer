@@ -3,10 +3,10 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Camera {
-	private Vector eye;
-	private Vector look;
-	private Vector up;
-	private int d;
+	private Vertex eye;
+	private Vertex look;
+	private Vertex up;
+	private double d;
 	private int boundU;
 	private int boundR;
 	private int boundD;
@@ -22,13 +22,13 @@ public class Camera {
 				String key_term = input.next();
 				switch (key_term) {
 				case "eye":
-					eye = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
+					eye = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "look":
-					look = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
+					look = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "up":
-					up = new Vector(input.nextInt(), input.nextInt(), input.nextInt());
+					up = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
 					break;
 				case "d":
 					d = input.nextInt();
@@ -56,19 +56,31 @@ public class Camera {
 		return true;
 	}
 
-	public Vector getEye() {
+	public Vertex getEye() {
 		return eye;
 	}
 
-	public Vector getLook() {
+	public void setEye(Vertex new_eye) {
+		eye = new_eye;
+	}
+
+	public Vertex getLook() {
 		return look;
 	}
 
-	public Vector getUp() {
+	public void setLook(Vertex new_look) {
+		look = new_look;
+	}
+
+	public Vertex getUp() {
 		return up;
 	}
 
-	public int getD() {
+	public void setUp(Vertex new_up) {
+		up = new_up;
+	}
+	
+	public double getD() {
 		return d;
 	}
 
@@ -80,4 +92,3 @@ public class Camera {
 		return new int[] { resx, resy };
 	}
 }
-
