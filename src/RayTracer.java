@@ -24,6 +24,10 @@ public class RayTracer {
 		Vertex center_of_near_clipping_plane = new Vertex(camera.getLook());
 		center_of_near_clipping_plane.normalize();
 		center_of_near_clipping_plane.scale(camera.getD());
+		Vertex right = Vertex.crossProduct( center_of_near_clipping_plane, camera.getUp()).unit();
+		Vertex up = Vertex.crossProduct(right, center_of_near_clipping_plane).unit();
+		System.out.println(right);
+		System.out.println(up);
 
 		// Re-center everything
 		for (Model m : models) {
