@@ -25,18 +25,31 @@ public class RayTracer {
 		center_of_near_clipping_plane.normalize();
 		center_of_near_clipping_plane.scale(camera.getD());
 		int[] bounds = camera.getBounds();
-		Vertex right = Vertex.crossProduct(center_of_near_clipping_plane, camera.getUp()).unit();
-		Vertex left = Vertex.crossProduct(camera.getUp(), center_of_near_clipping_plane).unit();
-		Vertex up = Vertex.crossProduct(right, center_of_near_clipping_plane).unit();
-		Vertex down = Vertex.crossProduct(left, center_of_near_clipping_plane).unit();
+		Vertex right = Vertex.crossProduct(center_of_near_clipping_plane, camera.getUp());
+		right = right.unit();
+		Vertex left = new Vertex(right);
 		right.scale(bounds[1]);
 		left.scale(bounds[3]);
+
+		Vertex up = Vertex.crossProduct(right, center_of_near_clipping_plane);
+		up.unit();
+		Vertex down = new Vertex(up);
 		up.scale(bounds[0]);
 		down.scale(bounds[2]);
-		System.out.println(up);
-		System.out.println(down);
-		System.out.println(left);
-		System.out.println(right);
+
+		Vertex topLeftCorner = new Vertex(up);
+		topLeftCorner.add(left);
+		Vertex topRightCorner = new Vertex(up);
+		topRightCorner.add(right);
+		Vertex bottomLeftCorner = new Vertex(down);
+		bottomLeftCorner.add(left);
+		Vertex bottomRightCorner = new Vertex(down);
+		bottomRightCorner.add(right);
+
+		topLeftCorner.add(center_of_near_clipping_plane);
+		topRightCorner.add(center_of_near_clipping_plane);
+		bottomLeftCorner.add(center_of_near_clipping_plane);
+		bottomRightCorner.add(center_of_near_clipping_plane);
 
 		// Re-center everything
 		for (Model m : models) {

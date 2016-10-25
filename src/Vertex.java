@@ -54,6 +54,14 @@ public class Vertex {
 		z *= scalar;
 	}
 
+	public Vertex newScale(Vertex other_vector) {
+		return new Vertex(x * other_vector.getX(), y * other_vector.getY(), z * other_vector.getZ());
+	}
+
+	public Vertex newscale(double scalar) {
+		return new Vertex(x * scalar, y * scalar, z * scalar);
+	}
+
 	public void squareRoot() {
 		x = Math.sqrt(x);
 		y = Math.sqrt(y);
