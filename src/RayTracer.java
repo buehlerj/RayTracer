@@ -24,10 +24,19 @@ public class RayTracer {
 		Vertex center_of_near_clipping_plane = new Vertex(camera.getLook());
 		center_of_near_clipping_plane.normalize();
 		center_of_near_clipping_plane.scale(camera.getD());
-		Vertex right = Vertex.crossProduct( center_of_near_clipping_plane, camera.getUp()).unit();
+		int[] bounds = camera.getBounds();
+		Vertex right = Vertex.crossProduct(center_of_near_clipping_plane, camera.getUp()).unit();
+		Vertex left = Vertex.crossProduct(camera.getUp(), center_of_near_clipping_plane).unit();
 		Vertex up = Vertex.crossProduct(right, center_of_near_clipping_plane).unit();
-		System.out.println(right);
+		Vertex down = Vertex.crossProduct(left, center_of_near_clipping_plane).unit();
+		right.scale(bounds[1]);
+		left.scale(bounds[3]);
+		up.scale(bounds[0]);
+		down.scale(bounds[2]);
 		System.out.println(up);
+		System.out.println(down);
+		System.out.println(left);
+		System.out.println(right);
 
 		// Re-center everything
 		for (Model m : models) {
@@ -80,5 +89,6 @@ public class RayTracer {
 
 		Picture picture = ray_tracer.capturePicture();
 		picture.write(args[args.length - 1], "a");
+		System.out.println("\n\n\n\n\n----------------- EXIT -----------------");
 	}
 }

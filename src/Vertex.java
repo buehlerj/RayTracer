@@ -13,7 +13,7 @@ public class Vertex {
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	Vertex(Vertex old_v) {
 		this.x = old_v.getX();
 		this.y = old_v.getY();

@@ -79,7 +79,7 @@ public class Camera {
 	public void setUp(Vertex new_up) {
 		up = new_up;
 	}
-	
+
 	public double getD() {
 		return d;
 	}
