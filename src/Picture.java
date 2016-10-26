@@ -11,9 +11,18 @@ public class Picture {
 		this.x = x;
 		this.y = y;
 		pixels = new ArrayList<Pixel>();
-		for (int i = 0; i < x * y; i++) {
-			pixels.add(new Pixel());
-		}
+	}
+
+	public ArrayList<Pixel> getPixels() {
+		return pixels;
+	}
+
+	public void addToPixels(Pixel p) {
+		pixels.add(p);
+	}
+
+	public void removeFromPixels(Pixel p) {
+		pixels.remove(p);
 	}
 
 	public boolean write(String output_file_name, String name_modifier) {
@@ -31,7 +40,9 @@ public class Picture {
 			output.println(x + " " + y + " " + 255);
 			output.print(toString());
 			output.close();
-		} catch (FileNotFoundException e) {System.err.println("Problem Writing file: " + new_file_name);}
+		} catch (FileNotFoundException e) {
+			System.err.println("Problem Writing file: " + new_file_name);
+		}
 		return true;
 	}
 

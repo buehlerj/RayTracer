@@ -22,6 +22,6 @@ public class Vector {
 	}
 
 	public String toString() {
-		return "[" + start.getX() + ", " + start.getY() + ", " + start.getZ() + "] - [" + end.getX() + ", " + end.getY() + ", " + end.getZ() + "]";
+		return "[" + start + "] - [" + end + "]";
 	}
 }
