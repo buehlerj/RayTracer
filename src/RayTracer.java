@@ -94,7 +94,7 @@ public class RayTracer {
 		Vertex currentRightHeight;
 		Vector currentVector;
 		Vertex currentPoint;
-		Vector ray;
+		Ray ray;
 		double tmin = 255;
 		double tmax = 0;
 		double distance;
@@ -106,7 +106,7 @@ public class RayTracer {
 			currentVector = new Vector(currentLeftHeight, currentRightHeight);
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Vector(camera.getEye(), currentPoint);
+				ray = new Ray(camera.getEye(), currentPoint);
 				distance = getDistance(ray);
 				if (distance > tmax)
 					tmax = distance;
@@ -127,7 +127,7 @@ public class RayTracer {
 			currentVector = new Vector(currentLeftHeight, currentRightHeight);
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Vector(camera.getEye(), currentPoint);
+				ray = new Ray(camera.getEye(), currentPoint);
 				distance = getDistance(ray);
 				ratio = 2 * (distance - tmin) / (tmax - tmin);
 				r = Math.max(0, 255 * (1 - ratio));
@@ -139,9 +139,16 @@ public class RayTracer {
 		}
 	}
 
-	public double getDistance(Vector ray) {
+	public double getDistance(Ray ray) {
 		double distance = 0;
-		return ray.getPoint(0.0).getX();
+		double currentDistance = 0;
+		for (Model m : models) {
+			if (currentDistance < distance)
+				distance = currentDistance;
+		}
+		Model m = models.get(1);
+		
+		return distance;
 	}
 
 	public Model aggregateModels(RayTracer rt) {
