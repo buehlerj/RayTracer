@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.omg.Messaging.SyncScopeHelper;
-
 /*
 C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane_cam01.txt                                                                                                                                     C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output1.ply
 D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_cam01.txt     D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\ellelltri.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\output\output1.ply
@@ -10,7 +8,7 @@ D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_
 
 public class RayTracer {
 	private Camera camera;
-	private static ArrayList<Model> models = new ArrayList<Model>();
+	private ArrayList<Model> models = new ArrayList<Model>();
 
 	public Picture capturePicture() {
 		// Make the eye the center of the image
@@ -50,11 +48,10 @@ public class RayTracer {
 		bottomLeftCorner.add(center_of_near_clipping_plane);
 		topRightCorner.add(center_of_near_clipping_plane);
 		topLeftCorner.add(center_of_near_clipping_plane);
-		
-		Vector topOfNCP = new Vector(topLeftCorner, topRightCorner);
+
 		Vector leftOfNCP = new Vector(topLeftCorner, bottomLeftCorner);
 		Vector rightOfNCP = new Vector(topRightCorner, bottomRightCorner);
-		
+
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			Vertex currentLeftHeight = new Vertex(leftOfNCP.getPoint((double) j / camera.getRes()[1]));
 			Vertex currentRightHeight = new Vertex(rightOfNCP.getPoint((double) j / camera.getRes()[1]));
@@ -62,6 +59,7 @@ public class RayTracer {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				Vertex currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
 				Vector ray = new Vector(camera.getEye(), currentPoint);
+				System.out.println(ray);
 				// NOW shoot a ray through currentPoint
 			}
 		}
@@ -75,11 +73,11 @@ public class RayTracer {
 		return photo;
 	}
 
-	public static Model aggregateModels() {
+	public static Model aggregateModels(RayTracer rt) {
 		Model complete = new Model();
 		int total_faces = 0;
 		int total_vertices = 0;
-		for (Model m : models) {
+		for (Model m : rt.models) {
 			total_faces += m.getNumberOfFaces();
 			total_vertices += m.getNumberOfVertices();
 			for (Vertex v : m.getVertices())

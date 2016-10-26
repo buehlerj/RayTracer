@@ -20,4 +20,8 @@ public class Vector {
 		point.add(start);
 		return point;
 	}
+
+	public String toString() {
+		return "[" + start.getX() + ", " + start.getY() + ", " + start.getZ() + "] - [" + end.getX() + ", " + end.getY() + ", " + end.getZ() + "]";
+	}
 }
