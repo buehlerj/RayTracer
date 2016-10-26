@@ -26,30 +26,45 @@ public class RayTracer {
 		center_of_near_clipping_plane.scale(camera.getD());
 		int[] bounds = camera.getBounds();
 		Vertex right = Vertex.crossProduct(center_of_near_clipping_plane, camera.getUp());
-		right = right.unit();
+		right.normalize();
 		Vertex left = new Vertex(right);
 		right.scale(bounds[1]);
 		left.scale(bounds[3]);
 
 		Vertex up = Vertex.crossProduct(right, center_of_near_clipping_plane);
-		up.unit();
+		up.normalize();
 		Vertex down = new Vertex(up);
 		up.scale(bounds[0]);
 		down.scale(bounds[2]);
 
-		Vertex topLeftCorner = new Vertex(up);
-		topLeftCorner.add(left);
-		Vertex topRightCorner = new Vertex(up);
-		topRightCorner.add(right);
-		Vertex bottomLeftCorner = new Vertex(down);
-		bottomLeftCorner.add(left);
-		Vertex bottomRightCorner = new Vertex(down);
-		bottomRightCorner.add(right);
+		Vertex bottomRightCorner = new Vertex(up);
+		bottomRightCorner.add(left);
+		Vertex bottomLeftCorner = new Vertex(up);
+		bottomLeftCorner.add(right);
+		Vertex topRightCorner = new Vertex(down);
+		topRightCorner.add(left);
+		Vertex topLeftCorner = new Vertex(down);
+		topLeftCorner.add(right);
 
-		topLeftCorner.add(center_of_near_clipping_plane);
-		topRightCorner.add(center_of_near_clipping_plane);
-		bottomLeftCorner.add(center_of_near_clipping_plane);
 		bottomRightCorner.add(center_of_near_clipping_plane);
+		bottomLeftCorner.add(center_of_near_clipping_plane);
+		topRightCorner.add(center_of_near_clipping_plane);
+		topLeftCorner.add(center_of_near_clipping_plane);
+		
+		Vector topOfNCP = new Vector(topLeftCorner, topRightCorner);
+		Vector leftOfNCP = new Vector(topLeftCorner, bottomLeftCorner);
+		Vector rightOfNCP = new Vector(topRightCorner, bottomRightCorner);
+		
+		for (int j = 0; j < camera.getRes()[1]; j++) {
+			Vertex currentLeftHeight = new Vertex(leftOfNCP.getPoint((double) j / camera.getRes()[1]));
+			Vertex currentRightHeight = new Vertex(rightOfNCP.getPoint((double) j / camera.getRes()[1]));
+			Vector currentVector = new Vector(currentLeftHeight, currentRightHeight);
+			for (int i = 0; i < camera.getRes()[0]; i++) {
+				Vertex currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
+				Vector ray = new Vector(camera.getEye(), currentPoint);
+				// NOW shoot a ray through currentPoint
+			}
+		}
 
 		// Re-center everything
 		for (Model m : models) {
