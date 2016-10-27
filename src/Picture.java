@@ -52,7 +52,7 @@ public class Picture {
 	@Override
 	public String toString() {
 		String all_pixels_string = "";
-		for (int i = 0; i < x * y; i++) {
+		for (int i = 0; i < pixels.size(); i++) {
 			all_pixels_string += pixels.get(i) + " ";
 			if (i % y == y - 1)
 				all_pixels_string += "\n";

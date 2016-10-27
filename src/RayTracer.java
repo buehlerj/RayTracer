@@ -35,7 +35,8 @@ public class RayTracer {
 	public Picture capturePicture() {
 		Picture photo = new Picture(camera.getRes()[0], camera.getRes()[1]);
 
-		WV = camera.getEye().minus(camera.getLook());
+		// I flipped this minus
+		WV = camera.getLook().minus(camera.getEye());
 		WV = WV.timesEquals(1 / WV.normF());
 		UV = Vertex.crossProduct(camera.getUp(), WV);
 		UV = UV.timesEquals(1 / UV.normF());
@@ -79,31 +80,28 @@ public class RayTracer {
 				double gamma = x.get(1, 0);
 				double t = x.get(2, 0);
 				if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-					System.out.println("HIT");
 					distances.add(t);
-				}
-				else {
-					distances.add(null);
+					break;
 				}
 			}
+			if (distances.size() == i)
+				distances.add(null);
 		}
 
 		double min = getMin(distances);
 		double max = getMax(distances);
-		ArrayList<Pixel> pixels = new ArrayList<Pixel>();
 		for (int i = 0; i < distances.size(); i++) {
 			if (distances.get(i) == null) {
-				pixels.add(new Pixel());
+				photo.addToPixels(new Pixel());
 			}
 			else {
 				double ratio = 2 * (distances.get(i) - min) / (max - min);
 				double r = Math.max(0, 255 * (1 - ratio));
 				double b = Math.max(0, 255 * (ratio - 1));
 				double g = 255 - b - r;
-				pixels.add(new Pixel(r, g, b));
+				photo.addToPixels(new Pixel(r, g, b));
 			}
 		}
-		photo.setPixels(pixels);
 		return photo;
 	}
 
