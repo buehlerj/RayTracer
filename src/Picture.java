@@ -54,7 +54,7 @@ public class Picture {
 		String all_pixels_string = "";
 		for (int i = 0; i < pixels.size(); i++) {
 			all_pixels_string += pixels.get(i) + " ";
-			if (i % y == y - 1)
+			if (i % x == x - 1)
 				all_pixels_string += "\n";
 		}
 		return all_pixels_string;

@@ -1,13 +1,10 @@
 
 public class Pixel {
-	public int r;
-	public int g;
-	public int b;
+	public int r = 239;
+	public int g = 239;
+	public int b = 239;
 
 	Pixel() {
-		this.r = 239;
-		this.g = 239;
-		this.b = 239;
 	}
 
 	Pixel(int r, int g, int b) {

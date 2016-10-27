@@ -13,7 +13,7 @@ public class PA3 {
 	public static void main(String[] args) {
 		ArrayList<Pixel> pixels = new ArrayList<Pixel>();
 		pixels.add(new Pixel(1, 1, 1));
-		System.out.println();
+
 		RayTracer rayTracer = new RayTracer();
 		if (args.length < 3) {
 			System.err.println("Incorrect number of argments: " + args.length);
@@ -35,6 +35,7 @@ public class PA3 {
 		Picture picture = rayTracer.capturePicture();
 		picture.write(args[args.length - 1], "");
 		System.out.println(rayTracer.getCamera());
+		System.out.println("Wrote to: " + args[args.length - 1]);
 		System.out.println("\n\n\n\n----------------- EXIT -----------------");
 	}
 
