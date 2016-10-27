@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 import Jama.Matrix;
 
@@ -10,6 +11,7 @@ public class RayTracer {
 	private Vertex bottomRightCorner;
 	private Vertex bottomLeftCorner;
 	private ArrayList<Ray> rays = new ArrayList<>();
+	private ArrayList<Double> distances = new ArrayList<>();
 
 	public Camera getCamera() {
 		return camera;
@@ -97,10 +99,6 @@ public class RayTracer {
 		Vertex currentRightHeight;
 		Vector currentVector;
 		Vertex currentPoint;
-		Ray ray;
-		double tmin = 255;
-		double tmax = 0;
-		double distance;
 
 		// Get all Rays
 		for (int j = 0; j < camera.getRes()[1]; j++) {
@@ -109,32 +107,31 @@ public class RayTracer {
 			currentVector = new Vector(currentLeftHeight, currentRightHeight);
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Ray(new Vertex(), currentPoint);
-				rays.add(ray);
+				rays.add(new Ray(new Vertex(), currentPoint));
 			}
 		}
+		System.out.println(rays.get(0).getDirection());
 		CramersRule();
 
 		// Set Each Pixel's RGB Value
+		double tmin = getMin(distances);
+		double tmax = Collections.max(distances);
+		double distance;
 		double ratio;
 		double r;
 		double g;
 		double b;
-		Pixel currentPixel;
-		for (int j = 0; j < camera.getRes()[1]; j++) {
-			currentLeftHeight = new Vertex(leftOfNCP.getPoint((double) j / camera.getRes()[1]));
-			currentRightHeight = new Vertex(rightOfNCP.getPoint((double) j / camera.getRes()[1]));
-			currentVector = new Vector(currentLeftHeight, currentRightHeight);
-			for (int i = 0; i < camera.getRes()[0]; i++) {
-				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Ray(new Vertex(), currentPoint);
-				distance = getDistance(ray);
+
+		for (int i = 0; i < rays.size(); i++) {
+			distance = distances.get(i);
+			if (distance == -1)
+				photo.addToPixels(new Pixel());
+			else {
 				ratio = 2 * (distance - tmin) / (tmax - tmin);
 				r = Math.max(0, 255 * (1 - ratio));
 				b = Math.max(0, 255 * (ratio - 1));
 				g = 255 - b - r;
-				currentPixel = new Pixel(r, g, b);
-				photo.addToPixels(currentPixel);
+				photo.addToPixels(new Pixel(r, g, b));
 			}
 		}
 	}
@@ -149,66 +146,66 @@ public class RayTracer {
 		ArrayList<Vertex> b = new ArrayList<Vertex>();
 		ArrayList<Vertex> c = new ArrayList<Vertex>();
 		ArrayList<Matrix> coefficients = new ArrayList<Matrix>();
-		ArrayList<Matrix> betas = new ArrayList<Matrix>();
-		ArrayList<Matrix> gammas = new ArrayList<Matrix>();
-		ArrayList<Matrix> tValues = new ArrayList<Matrix>();
+		ArrayList<Double> betas = new ArrayList<Double>();
+		ArrayList<Double> gammas = new ArrayList<Double>();
 		Matrix coefficient;
 		Matrix xMatrix;
 		Matrix yMatrix;
 		Matrix zMatrix;
-		double[][] empty = new double[][]{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+		double[][] empty = new double[][] { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
 		for (Face f : currentModel.getFaces()) {
 			if (f.getNumberOfVertices() > 3)
 				System.err.println("ERROR: Face has more than 3 vertices");
-			// For all vertices on this face
-			int vertexIndex = 0;
-			for (int i : f.getVertexIndices()) {
-				Vertex currentVertex = currentModel.getVertices().get(i);
-				if (vertexIndex == 0)
-					a.add(currentVertex);
-				else if (vertexIndex == 1)
-					b.add(currentVertex);
-				else if (vertexIndex == 2)
-					c.add(currentVertex);
-				vertexIndex++;
+			else {
+				// For all vertices on this face
+				int vertexIndex = 0;
+				for (int i : f.getVertexIndices()) {
+					Vertex currentVertex = currentModel.getVertices().get(i);
+					if (vertexIndex == 0)
+						a.add(currentVertex);
+					else if (vertexIndex == 1)
+						b.add(currentVertex);
+					else if (vertexIndex == 2)
+						c.add(currentVertex);
+					vertexIndex++;
+				}
 			}
 		}
 
-		int rayIndex = 0;
 		boolean hitFace = false;
 		for (Ray r : rays) {
 			hitFace = false;
-			int faceIndex = 0;
-			for (Face f : currentModel.getFaces()) {
+			for (int faceIndex = 0; currentModel.getFaces().size() < faceIndex; faceIndex++) {
+				Vertex currentA = a.get(faceIndex);
+				Vertex currentB = b.get(faceIndex);
+				Vertex currentC = c.get(faceIndex);
 				if (hitFace == true)
 					break;
-				double a1 = a.get(faceIndex).getX() - b.get(faceIndex).getX();
-				double a2 = a.get(faceIndex).getY() - b.get(faceIndex).getY();
-				double a3 = a.get(faceIndex).getZ() - b.get(faceIndex).getZ();
-				double b1 = a.get(faceIndex).getX() - c.get(faceIndex).getX();
-				double b2 = a.get(faceIndex).getY() - c.get(faceIndex).getY();
-				double b3 = a.get(faceIndex).getZ() - c.get(faceIndex).getZ();
-				double c1 = r.getD().getX();
-				double c2 = r.getD().getY();
-				double c3 = r.getD().getZ();
-				double[][] coefficientValues = new double[][]{
-					{a1, b1, c1}, {a2, b2, c2}, {a3, b3, c3}
+				double a1 = currentA.getX() - currentB.getX();
+				double a2 = currentA.getY() - currentB.getY();
+				double a3 = currentA.getZ() - currentB.getZ();
+				double b1 = currentA.getX() - currentC.getX();
+				double b2 = currentA.getY() - currentC.getY();
+				double b3 = currentA.getZ() - currentC.getZ();
+				double c1 = r.getDirection().getX();
+				double c2 = r.getDirection().getY();
+				double c3 = r.getDirection().getZ();
+				double[][] coefficientValues = new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } };
+				double[][] xValues = new double[][] {
+					{ currentA.getX() - r.getOrigin().getX(), b1, c1 },
+					{ currentA.getY() - r.getOrigin().getY(), b2, c2 },
+					{ currentA.getZ() - r.getOrigin().getZ(), b3, c3 }
 				};
-				double[][] xValues = new double[][]{
-					{a.get(faceIndex).getX() - r.getOrigin().getX(), b1, c1},
-					{a.get(faceIndex).getY() - r.getOrigin().getY(), b2, c2},
-					{a.get(faceIndex).getZ() - r.getOrigin().getZ(), b3, c3}
+				double[][] yValues = new double[][] {
+					{ a1, currentA.getX() - r.getOrigin().getX(), c1 },
+					{ a2, currentA.getY() - r.getOrigin().getY(), c2 },
+					{ a3, currentA.getZ() - r.getOrigin().getZ(), c3 }
 				};
-				double[][] yValues = new double[][]{
-					{a1, a.get(faceIndex).getX() - r.getOrigin().getX(), c1},
-					{a2, a.get(faceIndex).getY() - r.getOrigin().getY(), c2},
-					{a3, a.get(faceIndex).getZ() - r.getOrigin().getZ(), c3}
-				};
-				double[][] zValues = new double[][]{
-					{a1, b1, a.get(faceIndex).getX() - r.getOrigin().getX()},
-					{a2, b2, a.get(faceIndex).getY() - r.getOrigin().getY()},
-					{a3, b3, a.get(faceIndex).getZ() - r.getOrigin().getZ()}
+				double[][] zValues = new double[][] {
+					{ a1, b1, currentA.getX() - r.getOrigin().getX() },
+					{ a2, b2, currentA.getY() - r.getOrigin().getY() },
+					{ a3, b3, currentA.getZ() - r.getOrigin().getZ() }
 				};
 				coefficient = new Matrix(coefficientValues);
 				xMatrix = new Matrix(xValues);
@@ -218,38 +215,29 @@ public class RayTracer {
 				double beta = xMatrix.det() / determinatnCoefficient;
 				double gamma = yMatrix.det() / determinatnCoefficient;
 				double t = zMatrix.det() / determinatnCoefficient;
-//				System.out.println(beta + ":" + gamma + ":" + t);
 				if (beta >= 0 && gamma >= 0 && (beta + gamma) >= 1 && t > 0) {
+					System.out.println("Hit");
 					coefficients.add(coefficient);
-					betas.add(xMatrix);
-					gammas.add(yMatrix);
-					tValues.add(zMatrix);
+					betas.add(beta);
+					gammas.add(gamma);
+					distances.add(t);
 					hitFace = true;
 					break;
 				}
-				faceIndex++;
 			}
 			if (hitFace == false) {
 				coefficients.add(new Matrix(empty));
-				betas.add(new Matrix(empty));
-				gammas.add(new Matrix(empty));
-				tValues.add(new Matrix(empty));
+				betas.add(-1.0);
+				gammas.add(-1.0);
+				distances.add(-1.0);
 			}
-			rayIndex++;
 		}
 		System.out.println("Resolution: " + camera.getRes()[0] + ", " + camera.getRes()[1]);
 		System.out.println("Rays: " + rays.size());
 		System.out.println("Coefficients: " + coefficients.size());
-		System.out.println("Betas: " + betas.size());
-		System.out.println("Gammas: " + gammas.size());
-		System.out.println("tValues: " + tValues.size() + "\n\n\n");
-	}
-
-	public double getDistance(Ray ray) {
-		return 0;
-	}
-
-	public void determinant() {
+		System.out.println("Betas: " + betas);
+		System.out.println("Gammas: " + gammas);
+		System.out.println("tValues: " + distances + "\n\n\n");
 
 	}
 
@@ -269,5 +257,22 @@ public class RayTracer {
 		complete.setNumberOfVertices(total_vertices);
 		complete.setDefaultHeader();
 		return complete;
+	}
+
+	public double getMin(ArrayList<Double> list) {
+		double min = -1;
+		for (double d : list) {
+			if (d != -1) {
+				min = d;
+				break;
+			}
+		}
+		if (min == -1)
+			return 0;
+		for (double d : list) {
+			if (d != -1 && d < min)
+				min = d;
+		}
+		return min;
 	}
 }

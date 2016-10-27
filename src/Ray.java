@@ -1,12 +1,12 @@
 
 public class Ray {
 	Vertex origin;
-	Vertex D;
+	Vertex direction;
 
-	Ray(Vertex origin, Vertex D) {
+	Ray(Vertex origin, Vertex direction) {
 		this.origin = origin;
-		this.D = D;
-		this.D.normalize();
+		this.direction = direction;
+		this.direction.normalize();
 	}
 
 	public Vertex getOrigin() {
@@ -17,16 +17,16 @@ public class Ray {
 		origin = new_origin;
 	}
 
-	public Vertex getD() {
-		return D;
+	public Vertex getDirection() {
+		return direction;
 	}
 
-	public void setD(Vertex new_D) {
-		D = new_D;
+	public void setDirection(Vertex new_D) {
+		direction = new_D;
 	}
 
 	public Vertex move (double t) {
-		Vertex movement = new Vertex(D);
+		Vertex movement = new Vertex(direction);
 		movement.scale(t);
 		return origin.plus(movement);
 	}

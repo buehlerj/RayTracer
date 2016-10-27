@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
-C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane_cam01.txt                                                                                                                                     C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output1.ply
-D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_cam01.txt     D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\ellelltri.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\output\output1.ply
+C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane_cam01.txt                                                                                                                                     C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output1.ppm
+D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_cam01.txt     D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\ellelltri.ply              D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\output\output1.ppm
+C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\test_cam.txt          C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\pyramid.ply          C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri.ply           C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output1.ppm
  */
 
 public class PA3 {
@@ -27,7 +29,7 @@ public class PA3 {
 		}
 
 		Picture picture = rayTracer.capturePicture();
-		picture.write(args[args.length - 1], "test");
+		picture.write(args[args.length - 1], "plane_01");
 		System.out.println("\n\n\n\n----------------- EXIT -----------------");
 	}
 
