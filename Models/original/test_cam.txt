@@ -1,6 +1,6 @@
 eye 0 0 0
-look 0 0 4
+look 4 0 0
 up 0 0 1
-d 2
+d 1
 bounds -10 10 10 -10
 res 10 10
