@@ -1,33 +1,21 @@
+import Jama.Matrix;
 
 public class Ray {
-	Vertex origin;
-	Vertex direction;
+	Matrix direction;
 
-	Ray(Vertex origin, Vertex direction) {
-		this.origin = origin;
+	Ray(Matrix direction) {
 		this.direction = direction;
-		this.direction.normalize();
 	}
 
-	public Vertex getOrigin() {
-		return origin;
-	}
-
-	public void setOrigin(Vertex new_origin) {
-		origin = new_origin;
-	}
-
-	public Vertex getDirection() {
+	public Matrix getDirection() {
 		return direction;
 	}
 
-	public void setDirection(Vertex new_D) {
+	public void setDirection(Matrix new_D) {
 		direction = new_D;
 	}
 
-	public Vertex move (double t) {
-		Vertex movement = new Vertex(direction);
-		movement.scale(t);
-		return origin.plus(movement);
+	public String toString() {
+		return direction.get(0, 0) + ", " + direction.get(1, 0) + ", " + direction.get(2, 0);
 	}
 }

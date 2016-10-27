@@ -5,12 +5,11 @@ import java.util.ArrayList;
 public class Picture {
 	int x;
 	int y;
-	ArrayList<Pixel> pixels;
+	ArrayList<Pixel> pixels = new ArrayList<Pixel>();
 
 	Picture(int x, int y) {
 		this.x = x;
 		this.y = y;
-		pixels = new ArrayList<Pixel>();
 	}
 
 	public ArrayList<Pixel> getPixels() {
@@ -23,6 +22,10 @@ public class Picture {
 
 	public void removeFromPixels(Pixel p) {
 		pixels.remove(p);
+	}
+
+	public void setPixels(ArrayList<Pixel> newPixels) {
+		pixels = newPixels;
 	}
 
 	public boolean write(String output_file_name, String name_modifier) {

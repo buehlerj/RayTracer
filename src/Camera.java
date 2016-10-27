@@ -2,10 +2,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import Jama.Matrix;
+
 public class Camera {
-	private Vertex eye;
-	private Vertex look;
-	private Vertex up;
+	private Matrix eye;
+	private Matrix look;
+	private Matrix up;
 	private double d;
 	private int boundU;
 	private int boundR;
@@ -22,13 +24,13 @@ public class Camera {
 				String key_term = input.next();
 				switch (key_term) {
 				case "eye":
-					eye = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					eye = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
 					break;
 				case "look":
-					look = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					look = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
 					break;
 				case "up":
-					up = new Vertex(input.nextInt(), input.nextInt(), input.nextInt());
+					up = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
 					break;
 				case "d":
 					d = input.nextInt();
@@ -56,27 +58,27 @@ public class Camera {
 		return true;
 	}
 
-	public Vertex getEye() {
+	public Matrix getEye() {
 		return eye;
 	}
 
-	public void setEye(Vertex new_eye) {
+	public void setEye(Matrix new_eye) {
 		eye = new_eye;
 	}
 
-	public Vertex getLook() {
+	public Matrix getLook() {
 		return look;
 	}
 
-	public void setLook(Vertex new_look) {
+	public void setLook(Matrix new_look) {
 		look = new_look;
 	}
 
-	public Vertex getUp() {
+	public Matrix getUp() {
 		return up;
 	}
 
-	public void setUp(Vertex new_up) {
+	public void setUp(Matrix new_up) {
 		up = new_up;
 	}
 
@@ -90,5 +92,16 @@ public class Camera {
 
 	public int[] getRes() {
 		return new int[] { resx, resy };
+	}
+
+	public String toString() {
+		String camera = "";
+		camera += "Eye: " + eye.get(0, 0) + ", " + eye.get(1, 0) + ", " + eye.get(2, 0);
+		camera += "\nLook: " + look.get(0, 0) + ", " + look.get(1, 0) + ", " + look.get(2, 0);
+		camera += "\nUp: " + up.get(0, 0) + ", " + up.get(1, 0) + ", " + up.get(2, 0);
+		camera += "\nD: " + d;
+		camera += "\nUp: " + boundU + ", Right: " + boundR + ", Down: " + boundD + ", Left: " + boundL;
+		camera += "\nResX: " + resx + ", ResY: " + resy;
+		return camera;
 	}
 }

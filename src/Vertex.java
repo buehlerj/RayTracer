@@ -1,5 +1,7 @@
 import java.text.DecimalFormat;
 
+import Jama.Matrix;
+
 public class Vertex {
 	private double x = 0.0;
 	private double y = 0.0;
@@ -62,11 +64,11 @@ public class Vertex {
 		z *= scalar;
 	}
 
-	public Vertex newScale(Vertex other_vector) {
+	public Vertex times(Vertex other_vector) {
 		return new Vertex(x * other_vector.getX(), y * other_vector.getY(), z * other_vector.getZ());
 	}
 
-	public Vertex newscale(double scalar) {
+	public Vertex times(double scalar) {
 		return new Vertex(x * scalar, y * scalar, z * scalar);
 	}
 
@@ -99,6 +101,13 @@ public class Vertex {
 		return new Vertex(i, -j, k);
 	}
 
+	public static Matrix crossProduct(Matrix a, Matrix b) {
+		double i = (a.get(1, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(1, 0));
+		double j = (a.get(0, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(0, 0));
+		double k = (a.get(0, 0) * b.get(1, 0)) - (a.get(1, 0) * b.get(0, 0));
+		return new Matrix(new double[][]{{i}, {j}, {k}});
+	}
+
 	public Vertex unit() {
 		double length = length();
 		return new Vertex(x / length, y / length, z / length);
@@ -113,6 +122,10 @@ public class Vertex {
 
 	public double length() {
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+	}
+
+	public double[][] toMatrixForm() {
+		return new double[][]{{x, y, z}};
 	}
 
 	public String toString() {

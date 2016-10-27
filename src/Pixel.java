@@ -1,25 +1,36 @@
-import java.text.DecimalFormat;
 
 public class Pixel {
-	public double r = 239;
-	public double g = 239;
-	public double b = 239;
+	public int r;
+	public int g;
+	public int b;
 
 	Pixel() {
+		this.r = 239;
+		this.g = 239;
+		this.b = 239;
 	}
 
-	Pixel(double r, double g, double b) {
+	Pixel(int r, int g, int b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 	}
 
-	public String toString() {
-		DecimalFormat df = new DecimalFormat("#.######");
-		return df.format(r) + " " + df.format(g) + " " + df.format(b);
+	Pixel(double r, double g, double b) {
+		this.r = (int) Math.round(r);
+		this.g = (int) Math.round(g);
+		this.b = (int) Math.round(b);
 	}
 
-	public void modify(double new_r, double new_g, double new_b) {
+	public String toString() {
+		return r + " " + g + " " + b;
+	}
+
+	public boolean equals(Pixel a) {
+		return r == a.r && g == a.g && b == a.b;
+	}
+
+	public void modify(int new_r, int new_g, int new_b) {
 		r = new_r;
 		g = new_g;
 		b = new_b;
