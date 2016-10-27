@@ -2,8 +2,7 @@
 public class Ray {
 	Vertex origin;
 	Vertex D;
-	double t;
-	
+
 	Ray(Vertex origin, Vertex D) {
 		this.origin = origin;
 		this.D = D;
@@ -21,8 +20,14 @@ public class Ray {
 	public Vertex getD() {
 		return D;
 	}
-	
+
 	public void setD(Vertex new_D) {
 		D = new_D;
+	}
+
+	public Vertex move (double t) {
+		Vertex movement = new Vertex(D);
+		movement.scale(t);
+		return origin.plus(movement);
 	}
 }

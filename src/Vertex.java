@@ -42,6 +42,10 @@ public class Vertex {
 		return new Vertex(x / other_vector.getX(), y / other_vector.getY(), z / other_vector.getZ());
 	}
 
+	public Vertex plus(Vertex addVertex) {
+		return new Vertex(x + addVertex.getX(), y + addVertex.getY(), z + addVertex.getZ());
+	}
+	
 	public Vertex minus(Vertex subtractor) {
 		return new Vertex(x - subtractor.getX(), y - subtractor.getY(), z - subtractor.getZ());
 	}

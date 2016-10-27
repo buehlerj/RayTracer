@@ -8,13 +8,13 @@ D:\jeffs\Documents\workspace\java\CS410\RayTracer-Java\Models\original\airplane_
 public class PA3 {
 
 	public static void main(String[] args) {
-		RayTracer ray_tracer = new RayTracer();
+		RayTracer rayTracer = new RayTracer();
 		if (args.length < 3) {
 			System.err.println("Incorrect number of argments: " + args.length);
 			System.exit(-1);
 		}
 
-		if (!ray_tracer.getCamera().read(args[0])) {
+		if (!rayTracer.getCamera().read(args[0])) {
 			System.exit(-1);
 		}
 
@@ -23,11 +23,11 @@ public class PA3 {
 			if (!model.read(model_file_name)) {
 				System.exit(-1);
 			}
-			ray_tracer.addModel(model);
+			rayTracer.addModel(model);
 		}
 
-		Picture picture = ray_tracer.capturePicture();
-		picture.write(args[args.length - 1], "airplane");
+		Picture picture = rayTracer.capturePicture();
+		picture.write(args[args.length - 1], "test");
 		System.out.println("\n\n\n\n----------------- EXIT -----------------");
 	}
 

@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import Jama.Matrix;
+
 public class RayTracer {
 	private Camera camera = new Camera();
 	private ArrayList<Model> models = new ArrayList<Model>();
@@ -106,7 +108,7 @@ public class RayTracer {
 			currentVector = new Vector(currentLeftHeight, currentRightHeight);
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Ray(camera.getEye(), currentPoint);
+				ray = new Ray(new Vertex(), currentPoint);
 				distance = getDistance(ray);
 				if (distance > tmax)
 					tmax = distance;
@@ -127,7 +129,7 @@ public class RayTracer {
 			currentVector = new Vector(currentLeftHeight, currentRightHeight);
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentPoint = new Vertex(currentVector.getPoint((double) i / camera.getRes()[0]));
-				ray = new Ray(camera.getEye(), currentPoint);
+				ray = new Ray(new Vertex(), currentPoint);
 				distance = getDistance(ray);
 				ratio = 2 * (distance - tmin) / (tmax - tmin);
 				r = Math.max(0, 255 * (1 - ratio));
@@ -141,14 +143,49 @@ public class RayTracer {
 
 	public double getDistance(Ray ray) {
 		double distance = 0;
-		double currentDistance = 0;
-		for (Model m : models) {
-			if (currentDistance < distance)
-				distance = currentDistance;
+		Model currentModel = models.get(0);
+		ArrayList<Matrix> coefficients = new ArrayList<Matrix>();
+		ArrayList<Matrix> xMatrices = new ArrayList<Matrix>();
+		ArrayList<Matrix> yMatrices = new ArrayList<Matrix>();
+		ArrayList<Matrix> zMatrices = new ArrayList<Matrix>();
+		ArrayList<Double> x;
+		ArrayList<Double> y;
+		ArrayList<Double> z;
+
+		for (Face f : currentModel.getFaces()) {
+			x = new ArrayList<Double>();
+			y = new ArrayList<Double>();
+			z = new ArrayList<Double>();
+			for (int i : f.getVertexIndices()) {
+				Vertex currentVertex = currentModel.getVertices().get(i);
+				x.add(currentVertex.getX());
+				y.add(currentVertex.getY());
+				z.add(currentVertex.getZ());
+			}
+			// a: 0
+			// b: 1
+			// c: 2
+			double a1 = x.get(0) - x.get(1);
+			double a2 = y.get(0) - y.get(1);
+			double a3 = z.get(0) - z.get(1);
+			double b1 = x.get(0) - x.get(2);
+			double b2 = y.get(0) - y.get(2);
+			double b3 = z.get(0) - z.get(2);
+			double[][] coefficientValues = new double[][] { { a1, b1, 0 }, { a2, b2, 0 }, { a3, b3, 0 } };
+			coefficients.add(new Matrix(coefficientValues));
+			double[][] xValues = new double[][] { { 0, b1, 0 }, { 0, b2, 0 }, { 0, b3, 0 } };
+			xMatrices.add(new Matrix(xValues));
+			double[][] yValues = new double[][] { { a1, 0, 0 }, { a2, 0, 0 }, { a3, 0, 0 } };
+			yMatrices.add(new Matrix(yValues));
+			double[][] zValues = new double[][] { { a1, b1, 0 }, { a2, b2, 0 }, { a3, b3, 0 } };
+			zMatrices.add(new Matrix(zValues));
 		}
-		Model m = models.get(1);
-		
+
 		return distance;
+	}
+
+	public void determinant() {
+
 	}
 
 	public Model aggregateModels(RayTracer rt) {
@@ -165,9 +202,7 @@ public class RayTracer {
 		}
 		complete.setNumberOfFaces(total_faces);
 		complete.setNumberOfVertices(total_vertices);
-		complete.setHeader("ply\nformat ascii 1.0\nelement vertex " + total_vertices
-				+ "\nproperty float32 x\nproperty float32 y\nproperty float32 z\nelement face " + total_faces
-				+ "\nproperty list uint8 int32 vertex_indices\nend_header\n");
+		complete.setDefaultHeader();
 		return complete;
 	}
 }

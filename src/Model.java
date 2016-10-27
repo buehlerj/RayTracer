@@ -191,6 +191,12 @@ public class Model {
 		header = new_header;
 	}
 
+	public void setDefaultHeader() {
+		header = "ply\nformat ascii 1.0\nelement vertex " + number_of_vertices
+				+ "\nproperty float32 x\nproperty float32 y\nproperty float32 z\nelement face " + number_of_faces
+				+ "\nproperty list uint8 int32 vertex_indices\nend_header\n";
+	}
+
 	public ArrayList<Vertex> getVertices() {
 		return vertices;
 	}

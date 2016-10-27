@@ -1,15 +1,39 @@
 import java.util.ArrayList;
 
 public class Face {
-	ArrayList<Integer> vertex_indices = new ArrayList<Integer>();
+	int numberOfVertices;
+	ArrayList<Integer> vertexIndices;
 
-	Face(ArrayList<Integer> vertex_indices) {
-		this.vertex_indices = vertex_indices;
+	Face(ArrayList<Integer> vertexIndices) {
+		this.numberOfVertices = vertexIndices.get(0);
+		this.vertexIndices = vertexIndices;
+		this.vertexIndices.remove(0);
+	}
+
+	public int getNumberOfVertices() {
+		return numberOfVertices;
+	}
+
+	public void setNumberOfVertices(int newNumberOfVertices) {
+		numberOfVertices = newNumberOfVertices;
+	}
+
+	public ArrayList<Integer> getVertexIndices() {
+		return vertexIndices;
+	}
+
+	public void addToVertexIndices(int newVertexIndex) {
+		vertexIndices.add(newVertexIndex);
+	}
+
+	public void removeFromVertexIndices(int removeIndex) {
+		vertexIndices.remove(removeIndex);
 	}
 
 	public String toString() {
 		String faces = "";
-		for (int index : vertex_indices)
+		faces += numberOfVertices + " ";
+		for (int index : vertexIndices)
 			faces += index + " ";
 		return faces;
 	}
