@@ -51,7 +51,7 @@ public class RayTracer {
 		cameraU = Vertex.crossProduct(camera.getUp(), cameraW);
 		cameraU = cameraU.timesEquals(1 / cameraU.normF());
 		cameraV = Vertex.crossProduct(cameraW, cameraU);
-
+		
 		// Add all Rays
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {

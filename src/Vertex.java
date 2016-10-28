@@ -105,7 +105,7 @@ public class Vertex {
 		double i = (a.get(1, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(1, 0));
 		double j = (a.get(0, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(0, 0));
 		double k = (a.get(0, 0) * b.get(1, 0)) - (a.get(1, 0) * b.get(0, 0));
-		return new Matrix(new double[][]{{i}, {j}, {k}});
+		return new Matrix(new double[][]{{i}, {-j}, {k}});
 	}
 
 	public Vertex unit() {
