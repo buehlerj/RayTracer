@@ -20,7 +20,7 @@ public class RayTracer {
 		distances = new ArrayList<>();
 		cameraW = new Matrix(3, 1);
 		cameraU = new Matrix(3, 1);
-		cameraV = new Matrix(3, 1);		
+		cameraV = new Matrix(3, 1);
 	}
 
 	public Camera getCamera() {
@@ -51,17 +51,13 @@ public class RayTracer {
 		cameraU = Vertex.crossProduct(camera.getUp(), cameraW);
 		cameraU = cameraU.timesEquals(1 / cameraU.normF());
 		cameraV = Vertex.crossProduct(cameraW, cameraU);
-		
+
 		// Add all Rays
-		for (int j = 0; j < camera.getRes()[1]; j++) {
-			for (int i = 0; i < camera.getRes()[0]; i++) {
-//				pixels.add(pixelPt(i, j));
-//				rays.add(pixelRay(i, j));
+		for (int i = 0; i < camera.getRes()[0]; i++) {
+			for (int j = 0; j < camera.getRes()[1]; j++) {
 				setPixelPointsAndRays(i, j);
 			}
 		}
-		for (Ray r : rays)
-			System.out.println(r);
 
 		Model m = models.get(0);
 		boolean hitFace;
@@ -71,7 +67,7 @@ public class RayTracer {
 				Vertex a = m.getVertices().get(f.getVertexIndices().get(0));
 				Vertex b = m.getVertices().get(f.getVertexIndices().get(1));
 				Vertex c = m.getVertices().get(f.getVertexIndices().get(2));
-				Matrix pixel = camera.getEye().minus(pixels.get(i));
+				Matrix pixel = pixels.get(i);
 				Matrix D = pixels.get(i).minus(camera.getEye());
 				D = D.timesEquals(1 / D.normF());
 				double a1 = a.getX() - b.getX();
@@ -86,12 +82,8 @@ public class RayTracer {
 				double d1 = a.getX() - pixel.get(0, 0);
 				double d2 = a.getY() - pixel.get(1, 0);
 				double d3 = a.getZ() - pixel.get(2, 0);
-				Matrix M = new Matrix (new double[][]{
-					{a1, b1, c1},
-					{a2, b2, c2},
-					{a3, b3, c3}
-				});
-				Matrix y = new Matrix (new double[][]{ {d1}, {d2}, {d3} });
+				Matrix M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
+				Matrix y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
 				Matrix x = M.solve(y);
 				double beta = x.get(0, 0);
 				double gamma = x.get(1, 0);
@@ -111,8 +103,7 @@ public class RayTracer {
 		for (int i = 0; i < distances.size(); i++) {
 			if (distances.get(i) == null) {
 				photo.addToPixels(new Pixel());
-			}
-			else {
+			} else {
 				double ratio = 2 * (distances.get(i) - min) / (max - min);
 				double r = Math.max(0, 255 * (1 - ratio));
 				double b = Math.max(0, 255 * (ratio - 1));
@@ -158,13 +149,13 @@ public class RayTracer {
 		double right = camera.getBounds()[1];
 		double bottom = camera.getBounds()[2];
 		double left = camera.getBounds()[3];
-		double px = i / (width - 1) * (right - left) + left;
-		double py = j / (height - 1) * (top - bottom) + bottom;
+		double px = (double) i / (double) (width - 1) * (double) (right - left) + left;
+		double py = (double) j / (double) (height - 1) * (double) (top - bottom) + bottom;
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px)).plus(cameraV.times(py));
 		Matrix ray = pixpt.minus(camera.getEye());
 		ray = ray.timesEquals(1 / ray.normF());
 		pixels.add(pixpt);
-		rays.add(new Ray(ray));	
+		rays.add(new Ray(ray));
 	}
 
 	public double getMin(ArrayList<Double> list) {

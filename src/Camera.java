@@ -24,22 +24,22 @@ public class Camera {
 				String key_term = input.next();
 				switch (key_term) {
 				case "eye":
-					eye = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
+					eye = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
 					break;
 				case "look":
-					look = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
+					look = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
 					break;
 				case "up":
-					up = new Matrix(new double[][]{{input.nextInt()}, {input.nextInt()}, {input.nextInt()}});
+					up = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
 					break;
 				case "d":
-					d = input.nextInt();
+					d = input.nextInt() * -1;
 					break;
 				case "bounds":
 					boundD = input.nextInt();
-					boundL = input.nextInt();
-					boundU = input.nextInt();
 					boundR = input.nextInt();
+					boundU = input.nextInt();
+					boundL = input.nextInt();
 					break;
 				case "res":
 					resx = input.nextInt();

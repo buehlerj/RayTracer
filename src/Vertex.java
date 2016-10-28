@@ -47,7 +47,7 @@ public class Vertex {
 	public Vertex plus(Vertex addVertex) {
 		return new Vertex(x + addVertex.getX(), y + addVertex.getY(), z + addVertex.getZ());
 	}
-	
+
 	public Vertex minus(Vertex subtractor) {
 		return new Vertex(x - subtractor.getX(), y - subtractor.getY(), z - subtractor.getZ());
 	}
@@ -105,7 +105,7 @@ public class Vertex {
 		double i = (a.get(1, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(1, 0));
 		double j = (a.get(0, 0) * b.get(2, 0)) - (a.get(2, 0) * b.get(0, 0));
 		double k = (a.get(0, 0) * b.get(1, 0)) - (a.get(1, 0) * b.get(0, 0));
-		return new Matrix(new double[][]{{i}, {-j}, {k}});
+		return new Matrix(new double[][] { { i }, { -j }, { k } });
 	}
 
 	public Vertex unit() {
@@ -125,7 +125,7 @@ public class Vertex {
 	}
 
 	public double[][] toMatrixForm() {
-		return new double[][]{{x, y, z}};
+		return new double[][] { { x, y, z } };
 	}
 
 	public String toString() {
