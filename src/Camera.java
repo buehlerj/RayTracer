@@ -37,9 +37,9 @@ public class Camera {
 					break;
 				case "bounds":
 					boundD = input.nextInt();
-					boundR = input.nextInt();
-					boundU = input.nextInt();
 					boundL = input.nextInt();
+					boundU = input.nextInt();
+					boundR = input.nextInt();
 					break;
 				case "res":
 					resx = input.nextInt();

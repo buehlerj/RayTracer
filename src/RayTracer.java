@@ -85,6 +85,7 @@ public class RayTracer {
 				Matrix M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
 				Matrix y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
 				Matrix x = M.solve(y);
+
 				double beta = x.get(0, 0);
 				double gamma = x.get(1, 0);
 				double t = x.get(2, 0);
