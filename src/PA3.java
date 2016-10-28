@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Jama.Matrix;
-
 /*
 C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane_cam01.txt C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\airplane.ply C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output_plane.ppm
 C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri_cam01.txt C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\original\ellelltri.ply C:\Users\Jeffrey\Documents\workspace\Java\CS410\RayTracer\Models\output\output1.ppm
