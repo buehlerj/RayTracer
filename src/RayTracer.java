@@ -62,34 +62,40 @@ public class RayTracer {
 
 		Model m = models.get(0);
 		ArrayList<Double> tValues = new ArrayList<Double>();
+		double a1; double a2; double a3;
+		double b1; double b2; double b3;
+		double c1; double c2; double c3;
+		double d1; double d2; double d3;
+		Matrix pixel; Matrix D; Matrix M; Matrix y; Matrix x;
+		double beta; double gamma; double t;
 		for (int i = 0; i < rays.size(); i++) {
 			tValues.clear();
+			pixel = pixels.get(i);
+			D = pixels.get(i).minus(camera.getEye());
+			D = D.timesEquals(1 / D.normF());
+			c1 = D.get(0, 0);
+			c2 = D.get(1, 0);
+			c3 = D.get(2, 0);
 			for (Face f : m.getFaces()) {
 				Vertex a = m.getVertices().get(f.getVertexIndices().get(0));
 				Vertex b = m.getVertices().get(f.getVertexIndices().get(1));
 				Vertex c = m.getVertices().get(f.getVertexIndices().get(2));
-				Matrix pixel = pixels.get(i);
-				Matrix D = pixels.get(i).minus(camera.getEye());
-				D = D.timesEquals(1 / D.normF());
-				double a1 = a.getX() - b.getX();
-				double a2 = a.getY() - b.getY();
-				double a3 = a.getZ() - b.getZ();
-				double b1 = a.getX() - c.getX();
-				double b2 = a.getY() - c.getY();
-				double b3 = a.getZ() - c.getZ();
-				double c1 = D.get(0, 0);
-				double c2 = D.get(1, 0);
-				double c3 = D.get(2, 0);
-				double d1 = a.getX() - pixel.get(0, 0);
-				double d2 = a.getY() - pixel.get(1, 0);
-				double d3 = a.getZ() - pixel.get(2, 0);
-				Matrix M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
-				Matrix y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
-				Matrix x = M.solve(y);
+				a1 = a.getX() - b.getX();
+				a2 = a.getY() - b.getY();
+				a3 = a.getZ() - b.getZ();
+				b1 = a.getX() - c.getX();
+				b2 = a.getY() - c.getY();
+				b3 = a.getZ() - c.getZ();
+				d1 = a.getX() - pixel.get(0, 0);
+				d2 = a.getY() - pixel.get(1, 0);
+				d3 = a.getZ() - pixel.get(2, 0);
+				M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
+				y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
+				x = M.solve(y);
 
-				double beta = x.get(0, 0);
-				double gamma = x.get(1, 0);
-				double t = x.get(2, 0);
+				beta = x.get(0, 0);
+				gamma = x.get(1, 0);
+				t = x.get(2, 0);
 				if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 					tValues.add(t);
 				}
