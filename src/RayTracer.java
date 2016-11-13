@@ -124,12 +124,12 @@ public class RayTracer {
 	}
 
 	public Matrix pixelPt(int i, int j) {
-		double width = camera.getRes()[0];
-		double height = camera.getRes()[1];
-		double top = camera.getBounds()[0];
-		double right = camera.getBounds()[1];
-		double bottom = camera.getBounds()[2];
-		double left = camera.getBounds()[3];
+		double width = (double) camera.getRes()[0];
+		double height = (double) camera.getRes()[1];
+		double top = (double) camera.getBounds()[0];
+		double right = (double) camera.getBounds()[1];
+		double bottom = (double) camera.getBounds()[2];
+		double left = (double) camera.getBounds()[3];
 		double px = i / (width - 1) * (right - left) + left;
 		double py = j / (height - 1) * (top - bottom) + bottom;
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
@@ -138,12 +138,12 @@ public class RayTracer {
 	}
 
 	public Ray pixelRay(int i, int j) {
-		double width = camera.getRes()[0];
-		double height = camera.getRes()[1];
-		double top = camera.getBounds()[0];
-		double right = camera.getBounds()[1];
-		double bottom = camera.getBounds()[2];
-		double left = camera.getBounds()[3];
+		double width = (double) camera.getRes()[0];
+		double height = (double) camera.getRes()[1];
+		double top = (double) camera.getBounds()[0];
+		double right = (double) camera.getBounds()[1];
+		double bottom = (double) camera.getBounds()[2];
+		double left = (double) camera.getBounds()[3];
 		double px = i / (width - 1) * (right - left) + left;
 		double py = j / (height - 1) * (top - bottom) + bottom;
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
@@ -154,12 +154,12 @@ public class RayTracer {
 	}
 
 	public void setPixelPointsAndRays(int i, int j) {
-		double width = camera.getRes()[0];
-		double height = camera.getRes()[1];
-		double top = camera.getBounds()[0];
-		double right = camera.getBounds()[1];
-		double bottom = camera.getBounds()[2];
-		double left = camera.getBounds()[3];
+		double width = (double) camera.getRes()[0];
+		double height = (double) camera.getRes()[1];
+		double top = (double) camera.getBounds()[0];
+		double right = (double) camera.getBounds()[1];
+		double bottom = (double) camera.getBounds()[2];
+		double left = (double) camera.getBounds()[3];
 		double px = (double) i / (double) (width - 1) * (double) (right - left) + left;
 		double py = (double) j / (double) (height - 1) * (double) (top - bottom) + bottom;
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
@@ -167,6 +167,9 @@ public class RayTracer {
 		Matrix ray = pixpt.minus(camera.getEye());
 		ray = ray.timesEquals(1 / ray.normF());
 		pixels.add(pixpt);
+//		System.out.print(pixpt.get(0, 0) + ", ");
+//		System.out.print(pixpt.get(1, 0) + ", ");
+//		System.out.println(pixpt.get(2, 0));
 		rays.add(new Ray(ray));
 	}
 

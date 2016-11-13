@@ -36,10 +36,10 @@ public class Camera {
 					d = input.nextInt() * -1;
 					break;
 				case "bounds":
-					boundD = input.nextInt();
 					boundL = input.nextInt();
-					boundU = input.nextInt();
+					boundD = input.nextInt();
 					boundR = input.nextInt();
+					boundU = input.nextInt();
 					break;
 				case "res":
 					resx = input.nextInt();
