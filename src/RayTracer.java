@@ -6,8 +6,7 @@ import Jama.Matrix;
 public class RayTracer {
 	private Camera camera;
 	private ArrayList<Model> models;
-	private ArrayList<Ray> rays;
-	private ArrayList<Matrix> pixels;
+	private ArrayList<Matrix> pixelPoints;
 	private ArrayList<Double> distances;
 	private Matrix cameraW;
 	private Matrix cameraU;
@@ -16,8 +15,7 @@ public class RayTracer {
 	public RayTracer() {
 		camera = new Camera();
 		models = new ArrayList<Model>();
-		rays = new ArrayList<>();
-		pixels = new ArrayList<>();
+		pixelPoints = new ArrayList<>();
 		distances = new ArrayList<>();
 		cameraW = new Matrix(3, 1);
 		cameraU = new Matrix(3, 1);
@@ -54,41 +52,42 @@ public class RayTracer {
 		cameraV = Vertex.crossProduct(cameraW, cameraU);
 
 		// Add all Rays
-		for (int i = camera.getRes()[0] - 1; i >= 0; i--) {
-			for (int j = 0; j < camera.getRes()[1]; j++) {
-				setPixelPointsAndRays(j, i);
+		for (int j = camera.getRes()[1] - 1; j >= 0; j--) {
+			for (int i = 0; i < camera.getRes()[0]; i++) {
+				pixelPoints.add(pixelPt(i, j));
 			}
 		}
 
 		Model m = models.get(0);
 		ArrayList<Double> tValues = new ArrayList<Double>();
+		Vertex aVertex; Vertex bVertex; Vertex cVertex;
 		double a1; double a2; double a3;
 		double b1; double b2; double b3;
 		double c1; double c2; double c3;
 		double d1; double d2; double d3;
 		Matrix pixel; Matrix D; Matrix M; Matrix y; Matrix x;
 		double beta; double gamma; double t;
-		for (int i = 0; i < rays.size(); i++) {
+		for (int i = 0; i < pixelPoints.size(); i++) {
 			tValues.clear();
-			pixel = pixels.get(i);
-			D = pixels.get(i).minus(camera.getEye());
+			pixel = pixelPoints.get(i);
+			D = pixel.minus(camera.getEye());
 			D = D.timesEquals(1 / D.normF());
 			c1 = D.get(0, 0);
 			c2 = D.get(1, 0);
 			c3 = D.get(2, 0);
 			for (Face f : m.getFaces()) {
-				Vertex a = m.getVertices().get(f.getVertexIndices().get(0));
-				Vertex b = m.getVertices().get(f.getVertexIndices().get(1));
-				Vertex c = m.getVertices().get(f.getVertexIndices().get(2));
-				a1 = a.getX() - b.getX();
-				a2 = a.getY() - b.getY();
-				a3 = a.getZ() - b.getZ();
-				b1 = a.getX() - c.getX();
-				b2 = a.getY() - c.getY();
-				b3 = a.getZ() - c.getZ();
-				d1 = a.getX() - pixel.get(0, 0);
-				d2 = a.getY() - pixel.get(1, 0);
-				d3 = a.getZ() - pixel.get(2, 0);
+				aVertex = m.getVertices().get(f.getVertexIndices().get(0));
+				bVertex = m.getVertices().get(f.getVertexIndices().get(1));
+				cVertex = m.getVertices().get(f.getVertexIndices().get(2));
+				a1 = aVertex.getX() - bVertex.getX();
+				a2 = aVertex.getY() - bVertex.getY();
+				a3 = aVertex.getZ() - bVertex.getZ();
+				b1 = aVertex.getX() - cVertex.getX();
+				b2 = aVertex.getY() - cVertex.getY();
+				b3 = aVertex.getZ() - cVertex.getZ();
+				d1 = aVertex.getX() - pixel.get(0, 0);
+				d2 = aVertex.getY() - pixel.get(1, 0);
+				d3 = aVertex.getZ() - pixel.get(2, 0);
 				M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
 				y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
 				x = M.solve(y);
@@ -109,11 +108,11 @@ public class RayTracer {
 
 		double min = getMin(distances);
 		double max = getMax(distances);
-		for (int i = 0; i < distances.size(); i++) {
-			if (distances.get(i) == null) {
+		for (Double distance : distances) {
+			if (distance == null) {
 				photo.addToPixels(new Pixel());
 			} else {
-				double ratio = 2 * (distances.get(i) - min) / (max - min);
+				double ratio = 2 * (distance - min) / (max - min);
 				double r = Math.max(0, 255 * (1 - ratio));
 				double b = Math.max(0, 255 * (ratio - 1));
 				double g = 255 - b - r;
@@ -124,53 +123,17 @@ public class RayTracer {
 	}
 
 	public Matrix pixelPt(int i, int j) {
-		double width = (double) camera.getRes()[0];
-		double height = (double) camera.getRes()[1];
-		double top = (double) camera.getBounds()[0];
-		double right = (double) camera.getBounds()[1];
-		double bottom = (double) camera.getBounds()[2];
-		double left = (double) camera.getBounds()[3];
+		double width = camera.getRes()[0];
+		double height = camera.getRes()[1];
+		double left = camera.getBounds()[0];
+		double bottom = camera.getBounds()[1];
+		double right = camera.getBounds()[2];
+		double top = camera.getBounds()[3];
 		double px = i / (width - 1) * (right - left) + left;
 		double py = j / (height - 1) * (top - bottom) + bottom;
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
 				.plus(cameraV.times(py));
 		return pixpt;
-	}
-
-	public Ray pixelRay(int i, int j) {
-		double width = (double) camera.getRes()[0];
-		double height = (double) camera.getRes()[1];
-		double top = (double) camera.getBounds()[0];
-		double right = (double) camera.getBounds()[1];
-		double bottom = (double) camera.getBounds()[2];
-		double left = (double) camera.getBounds()[3];
-		double px = i / (width - 1) * (right - left) + left;
-		double py = j / (height - 1) * (top - bottom) + bottom;
-		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
-				.plus(cameraV.times(py));
-		Matrix ray = pixpt.minus(camera.getEye());
-		ray = ray.timesEquals(1 / ray.normF());
-		return new Ray(ray);
-	}
-
-	public void setPixelPointsAndRays(int i, int j) {
-		double width = (double) camera.getRes()[0];
-		double height = (double) camera.getRes()[1];
-		double top = (double) camera.getBounds()[0];
-		double right = (double) camera.getBounds()[1];
-		double bottom = (double) camera.getBounds()[2];
-		double left = (double) camera.getBounds()[3];
-		double px = (double) i / (double) (width - 1) * (double) (right - left) + left;
-		double py = (double) j / (double) (height - 1) * (double) (top - bottom) + bottom;
-		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
-				.plus(cameraV.times(py));
-		Matrix ray = pixpt.minus(camera.getEye());
-		ray = ray.timesEquals(1 / ray.normF());
-		pixels.add(pixpt);
-//		System.out.print(pixpt.get(0, 0) + ", ");
-//		System.out.print(pixpt.get(1, 0) + ", ");
-//		System.out.println(pixpt.get(2, 0));
-		rays.add(new Ray(ray));
 	}
 
 	public double getMin(ArrayList<Double> list) {

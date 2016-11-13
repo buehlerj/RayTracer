@@ -9,10 +9,10 @@ public class Camera {
 	private Matrix look;
 	private Matrix up;
 	private double d;
-	private int boundU;
-	private int boundR;
-	private int boundD;
 	private int boundL;
+	private int boundB;
+	private int boundR;
+	private int boundT;
 	private int resx;
 	private int resy;
 
@@ -37,9 +37,9 @@ public class Camera {
 					break;
 				case "bounds":
 					boundL = input.nextInt();
-					boundD = input.nextInt();
+					boundB = input.nextInt();
 					boundR = input.nextInt();
-					boundU = input.nextInt();
+					boundT = input.nextInt();
 					break;
 				case "res":
 					resx = input.nextInt();
@@ -87,7 +87,7 @@ public class Camera {
 	}
 
 	public int[] getBounds() {
-		return new int[] { boundU, boundR, boundD, boundL };
+		return new int[] { boundL, boundB, boundR, boundT };
 	}
 
 	public int[] getRes() {
@@ -100,7 +100,7 @@ public class Camera {
 		camera += "\nLook: " + look.get(0, 0) + ", " + look.get(1, 0) + ", " + look.get(2, 0);
 		camera += "\nUp: " + up.get(0, 0) + ", " + up.get(1, 0) + ", " + up.get(2, 0);
 		camera += "\nD: " + d;
-		camera += "\nUp: " + boundU + ", Right: " + boundR + ", Down: " + boundD + ", Left: " + boundL;
+		camera += "\nUp: " + boundT + ", Right: " + boundR + ", Down: " + boundB + ", Left: " + boundL;
 		camera += "\nResX: " + resx + ", ResY: " + resy;
 		return camera;
 	}
