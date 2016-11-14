@@ -5,6 +5,7 @@ import Jama.Matrix;
 
 public class RayTracer {
 	private Camera camera;
+	private Scene scene;
 	private ArrayList<Model> models;
 	private ArrayList<Matrix> pixelPoints;
 	private ArrayList<Double> distances;
@@ -28,6 +29,15 @@ public class RayTracer {
 
 	public void setCamera(Camera new_camera) {
 		camera = new_camera;
+	}
+
+	public Scene getScene() {
+		return scene;
+	}
+
+	public void setScene(Scene newScene) {
+		scene = newScene;
+		camera = newScene.getCamera();
 	}
 
 	public ArrayList<Model> getModels() {

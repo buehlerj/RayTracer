@@ -12,10 +12,8 @@ public class CS410BuehlerJeff {
 			System.err.println("Incorrect number of argments: " + args.length);
 			System.exit(-1);
 		}
-
-		if (!rayTracer.getCamera().read(args[0])) {
-			System.exit(-1);
-		}
+		
+		rayTracer.setScene(new Scene(args[0]));
 
 		for (String model_file_name : Arrays.copyOfRange(args, 1, args.length - 1)) {
 			Model model = new Model();
@@ -24,6 +22,9 @@ public class CS410BuehlerJeff {
 			}
 			rayTracer.addModel(model);
 		}
+
+
+
 		System.out.println(rayTracer.getCamera());
 		System.out.println("Wrote to: " + args[args.length - 1]);
 		System.out.println("\n\n\n\n----------------- EXIT -----------------");

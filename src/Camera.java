@@ -45,9 +45,6 @@ public class Camera {
 					resx = input.nextInt();
 					resy = input.nextInt();
 					break;
-				default:
-					System.err.println("Error with Camera file format.");
-					return false;
 				}
 			}
 			input.close();
