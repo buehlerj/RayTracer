@@ -22,9 +22,6 @@ public class CS410BuehlerJeff {
 			}
 			rayTracer.addModel(model);
 		}
-		
-
-
 
 		System.out.println(rayTracer.getCamera());
 		System.out.println("Wrote to: " + args[args.length - 1]);
