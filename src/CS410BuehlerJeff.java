@@ -22,6 +22,7 @@ public class CS410BuehlerJeff {
 			}
 			rayTracer.addModel(model);
 		}
+		
 
 
 

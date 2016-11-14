@@ -10,13 +10,13 @@ public class Scene {
 	private Matrix ambient;
 	private Matrix model;
 	private ArrayList<Matrix> lights;
-	private ArrayList<Matrix> spheres;
+	private ArrayList<Sphere> spheres;
 	
 	public Scene(String inputFileScene) {
 		camera = new Camera();
 		camera.read(inputFileScene);
 		lights = new ArrayList<Matrix>();
-		spheres = new ArrayList<Matrix>();
+		spheres = new ArrayList<Sphere>();
 		File inputFile = new File(inputFileScene);
 		try {
 			Scanner input = new Scanner(inputFile);
@@ -31,7 +31,7 @@ public class Scene {
 					 lights.add(light);
 					break;
 				case "sphere":
-					Matrix sphere = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
+					Sphere sphere = new Sphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
 					spheres.add(sphere);
 					break;
 				case "model":
@@ -68,11 +68,11 @@ public class Scene {
 		this.lights = lights;
 	}
 
-	public ArrayList<Matrix> getSphere() {
+	public ArrayList<Sphere> getSpheres() {
 		return spheres;
 	}
 
-	public void setSphere(ArrayList<Matrix> spheres) {
+	public void setSphere(ArrayList<Sphere> spheres) {
 		this.spheres = spheres;
 	}
 
