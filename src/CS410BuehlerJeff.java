@@ -12,7 +12,7 @@ public class CS410BuehlerJeff {
 			System.err.println("Incorrect number of argments: " + args.length);
 			System.exit(-1);
 		}
-		
+
 		rayTracer.setScene(new Scene(args[0]));
 
 		for (String model_file_name : Arrays.copyOfRange(args, 1, args.length - 1)) {

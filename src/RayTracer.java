@@ -7,7 +7,7 @@ public class RayTracer {
 	private Camera camera;
 	private Scene scene;
 	private ArrayList<Model> models;
-	private ArrayList<Matrix> pixelPoints;
+	private ArrayList<Ray> rays;
 	private ArrayList<Double> distances;
 	private Matrix cameraW;
 	private Matrix cameraU;
@@ -16,7 +16,7 @@ public class RayTracer {
 	public RayTracer() {
 		camera = new Camera();
 		models = new ArrayList<Model>();
-		pixelPoints = new ArrayList<>();
+		rays = new ArrayList<Ray>();
 		distances = new ArrayList<>();
 		cameraW = new Matrix(3, 1);
 		cameraU = new Matrix(3, 1);
@@ -64,7 +64,7 @@ public class RayTracer {
 		// Add all Rays
 		for (int j = camera.getRes()[1] - 1; j >= 0; j--) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-				pixelPoints.add(pixelPt(i, j));
+				rays.add(rayPt(i, j));
 			}
 		}
 
@@ -77,9 +77,9 @@ public class RayTracer {
 		double d1; double d2; double d3;
 		Matrix pixel; Matrix D; Matrix M; Matrix y; Matrix x;
 		double beta; double gamma; double t;
-		for (int i = 0; i < pixelPoints.size(); i++) {
+		for (int i = 0; i < rays.size(); i++) {
 			tValues.clear();
-			pixel = pixelPoints.get(i);
+			pixel = rays.get(i).getLocation();
 			D = pixel.minus(camera.getEye());
 			D = D.timesEquals(1 / D.normF());
 			c1 = D.get(0, 0);
@@ -144,6 +144,13 @@ public class RayTracer {
 		Matrix pixpt = camera.getEye().plus(cameraW.times(camera.getD())).plus(cameraU.times(px))
 				.plus(cameraV.times(py));
 		return pixpt;
+	}
+
+	public Ray rayPt(int i, int j) {
+		Matrix point = pixelPt(i, j);
+		Matrix ray = point.minus(cameraV);
+		ray = ray.timesEquals(1 / ray.normF());
+		return new Ray(point, point.plus(ray.times(camera.getD())));
 	}
 
 	public double getMin(ArrayList<Double> list) {

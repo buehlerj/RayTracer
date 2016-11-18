@@ -83,6 +83,10 @@ public class Camera {
 		return d;
 	}
 
+	public void setD(double d) {
+		this.d = d;
+	}
+
 	public int[] getBounds() {
 		return new int[] { boundL, boundB, boundR, boundT };
 	}

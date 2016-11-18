@@ -1,42 +1,34 @@
 import Jama.Matrix;
 
 public class Sphere {
-	double x;
-	double y;
-	double z;
+	Matrix cordinates;
 	double radius;
 	Matrix color;
 
 	public Sphere(double x, double y, double z, double radius, double red, double green, double blue) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.cordinates = new Matrix(new double[][] { { x }, { y }, { z } });
 		this.radius = radius;
-		this.color = new Matrix(new double[][] { {red}, {green}, {blue} });
+		this.color = new Matrix(new double[][] { { red }, { green }, { blue } });
 	}
 
-	public double getX() {
-		return x;
+	public Matrix getCoridnates() {
+		return cordinates;
+	}
+
+	public void setCordinates(Matrix cordinates) {
+		this.cordinates = cordinates;
 	}
 
 	public void setX(double x) {
-		this.x = x;
-	}
-
-	public double getY() {
-		return y;
+		cordinates.set(0, 0, x);
 	}
 
 	public void setY(double y) {
-		this.y = y;
-	}
-
-	public double getZ() {
-		return z;
+		cordinates.set(1, 0, y);
 	}
 
 	public void setZ(double z) {
-		this.z = z;
+		cordinates.set(2, 0, z);
 	}
 
 	public double getRadius() {
@@ -57,9 +49,7 @@ public class Sphere {
 
 	public String toString() {
 		String sphere = "";
-		sphere += x + " ";
-		sphere += y + " ";
-		sphere += z + " ";
+		sphere += Utils.MatrixToString(cordinates);
 		sphere += radius + " ";
 		sphere += color.get(0, 0) + " ";
 		sphere += color.get(1, 0) + " ";

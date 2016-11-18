@@ -3,13 +3,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Picture {
-	int x;
-	int y;
+	int width;
+	int height;
 	ArrayList<Pixel> pixels = new ArrayList<Pixel>();
 
-	Picture(int x, int y) {
-		this.x = x;
-		this.y = y;
+	Picture(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 
 	public ArrayList<Pixel> getPixels() {
@@ -40,7 +40,7 @@ public class Picture {
 		try {
 			PrintWriter output = new PrintWriter(new_file_name);
 			output.println("P3");
-			output.println(x + " " + y + " " + 255);
+			output.println(width + " " + height + " " + 255);
 			output.print(toString());
 			output.close();
 		} catch (FileNotFoundException e) {
@@ -54,7 +54,7 @@ public class Picture {
 		String all_pixels_string = "";
 		for (int i = 0; i < pixels.size(); i++) {
 			all_pixels_string += pixels.get(i) + " ";
-			if (i % x == x - 1)
+			if (i % width == width - 1)
 				all_pixels_string += "\n";
 		}
 		return all_pixels_string;

@@ -1,10 +1,20 @@
 import Jama.Matrix;
 
 public class Ray {
+	Matrix location;
 	Matrix direction;
 
-	Ray(Matrix direction) {
+	Ray(Matrix location, Matrix direction) {
+		this.location = location;
 		this.direction = direction;
+	}
+
+	public Matrix getLocation() {
+		return location;
+	}
+
+	public void setLocation(Matrix location) {
+		this.location = location;
 	}
 
 	public Matrix getDirection() {
