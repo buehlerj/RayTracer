@@ -15,6 +15,12 @@ public class Camera {
 	private int boundT;
 	private int resx;
 	private int resy;
+	private Matrix cameraW;
+	private Matrix cameraU;
+	private Matrix cameraV;
+
+	public Camera() {
+	}
 
 	public boolean read(String inputFileName) {
 		File inputFile = new File(inputFileName);
@@ -53,6 +59,30 @@ public class Camera {
 			return false;
 		}
 		return true;
+	}
+
+	public Matrix getCameraW() {
+		return cameraW;
+	}
+
+	public void setCameraW(Matrix cameraW) {
+		this.cameraW = cameraW;
+	}
+
+	public Matrix getCameraU() {
+		return cameraU;
+	}
+
+	public void setCameraU(Matrix cameraU) {
+		this.cameraU = cameraU;
+	}
+
+	public Matrix getCameraV() {
+		return cameraV;
+	}
+
+	public void setCameraV(Matrix cameraV) {
+		this.cameraV = cameraV;
 	}
 
 	public Matrix getEye() {
