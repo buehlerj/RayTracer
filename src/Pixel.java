@@ -27,9 +27,9 @@ public class Pixel {
 		return r == a.r && g == a.g && b == a.b;
 	}
 
-	public void modify(int new_r, int new_g, int new_b) {
-		r = new_r;
-		g = new_g;
-		b = new_b;
+	public void modify(int r, int g, int b) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
 	}
 }

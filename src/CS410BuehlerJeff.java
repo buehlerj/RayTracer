@@ -3,7 +3,7 @@ import java.util.Arrays;
 public class CS410BuehlerJeff {
 
 	public static void main(String[] args) {
-		PA4(args);
+		PA3(args);
 	}
 
 	public static void PA4(String[] args) {

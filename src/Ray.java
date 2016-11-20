@@ -21,8 +21,8 @@ public class Ray {
 		return direction;
 	}
 
-	public void setDirection(Matrix new_D) {
-		direction = new_D;
+	public void setDirection(Matrix direction) {
+		this.direction = direction;
 	}
 
 	public String toString() {

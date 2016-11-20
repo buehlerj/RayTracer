@@ -28,35 +28,35 @@ public class Picture {
 		pixels = newPixels;
 	}
 
-	public boolean write(String output_file_name, String name_modifier) {
-		if (name_modifier.length() > 0)
-			name_modifier = "_" + name_modifier;
-		String[] file_split = output_file_name.split("\\.");
-		String new_file_name = "";
-		for (int i = 0; i < file_split.length - 1; i++) {
-			new_file_name += file_split[i];
+	public boolean write(String outputFileName, String nameModifier) {
+		if (nameModifier.length() > 0)
+			nameModifier = "_" + nameModifier;
+		String[] fileSplit = outputFileName.split("\\.");
+		String newFileName = "";
+		for (int i = 0; i < fileSplit.length - 1; i++) {
+			newFileName += fileSplit[i];
 		}
-		new_file_name += name_modifier + "." + file_split[file_split.length - 1];
+		newFileName += nameModifier + "." + fileSplit[fileSplit.length - 1];
 		try {
-			PrintWriter output = new PrintWriter(new_file_name);
+			PrintWriter output = new PrintWriter(newFileName);
 			output.println("P3");
 			output.println(width + " " + height + " " + 255);
 			output.print(toString());
 			output.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Problem Writing file: " + new_file_name);
+			System.err.println("Problem Writing file: " + newFileName);
 		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		String all_pixels_string = "";
+		String allPixelsString = "";
 		for (int i = 0; i < pixels.size(); i++) {
-			all_pixels_string += pixels.get(i) + " ";
+			allPixelsString += pixels.get(i) + " ";
 			if (i % width == width - 1)
-				all_pixels_string += "\n";
+				allPixelsString += "\n";
 		}
-		return all_pixels_string;
+		return allPixelsString;
 	}
 }

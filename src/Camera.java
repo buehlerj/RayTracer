@@ -16,13 +16,13 @@ public class Camera {
 	private int resx;
 	private int resy;
 
-	public boolean read(String input_file_name) {
-		File input_file = new File(input_file_name);
+	public boolean read(String inputFileName) {
+		File inputFile = new File(inputFileName);
 		try {
-			Scanner input = new Scanner(input_file);
+			Scanner input = new Scanner(inputFile);
 			while (input.hasNext()) {
-				String key_term = input.next();
-				switch (key_term) {
+				String keyTerm = input.next();
+				switch (keyTerm) {
 				case "eye":
 					eye = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
 					break;
@@ -49,7 +49,7 @@ public class Camera {
 			}
 			input.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Problem Read file: " + input_file_name);
+			System.err.println("Problem Read file: " + inputFileName);
 			return false;
 		}
 		return true;
@@ -59,24 +59,24 @@ public class Camera {
 		return eye;
 	}
 
-	public void setEye(Matrix new_eye) {
-		eye = new_eye;
+	public void setEye(Matrix newEye) {
+		eye = newEye;
 	}
 
 	public Matrix getLook() {
 		return look;
 	}
 
-	public void setLook(Matrix new_look) {
-		look = new_look;
+	public void setLook(Matrix newLook) {
+		look = newLook;
 	}
 
 	public Matrix getUp() {
 		return up;
 	}
 
-	public void setUp(Matrix new_up) {
-		up = new_up;
+	public void setUp(Matrix newUp) {
+		up = newUp;
 	}
 
 	public double getD() {

@@ -10,8 +10,8 @@ public class Model {
 	String header = "";
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	ArrayList<Face> faces = new ArrayList<Face>();
-	int number_of_vertices = 0;
-	int number_of_faces = 0;
+	int numberOfVertices = 0;
+	int numberOfFaces = 0;
 
 	Model() {
 	}
@@ -30,15 +30,15 @@ public class Model {
 					if (next.equals("end_header"))
 						reading_header = false;
 					if (next.contains("element vertex"))
-						number_of_vertices = Integer.valueOf(next.split("\\s+")[2]);
+						numberOfVertices = Integer.valueOf(next.split("\\s+")[2]);
 					if (next.contains("element face"))
-						number_of_faces = Integer.valueOf(next.split("\\s+")[2]);
+						numberOfFaces = Integer.valueOf(next.split("\\s+")[2]);
 				} else {
-					if (vertex_count < number_of_vertices) {
+					if (vertex_count < numberOfVertices) {
 						Vertex input_vertex = new Vertex(input.nextDouble(), input.nextDouble(), input.nextDouble());
 						vertices.add(input_vertex);
 						vertex_count++;
-					} else if (face_count < number_of_faces) {
+					} else if (face_count < numberOfFaces) {
 						String line = input.nextLine();
 						if (!line.isEmpty()) {
 							ArrayList<Integer> face_vertices = new ArrayList<Integer>();
@@ -63,18 +63,18 @@ public class Model {
 	}
 
 	@SuppressWarnings("resource")
-	public boolean write(String output_file_name, String name_modifier) {
-		if (name_modifier.length() > 0)
-			name_modifier = "_" + name_modifier;
-		String[] file_split = output_file_name.split("\\.");
-		String new_file_name = "";
-		for (int i = 0; i < file_split.length - 1; i++) {
-			new_file_name += file_split[i];
+	public boolean write(String outputFileName, String nameModifier) {
+		if (nameModifier.length() > 0)
+			nameModifier = "_" + nameModifier;
+		String[] fileSplit = outputFileName.split("\\.");
+		String newFileName = "";
+		for (int i = 0; i < fileSplit.length - 1; i++) {
+			newFileName += fileSplit[i];
 		}
-		new_file_name += name_modifier + "." + file_split[file_split.length - 1];
+		newFileName += nameModifier + "." + fileSplit[fileSplit.length - 1];
 		try {
-			PrintWriter output = new PrintWriter(new_file_name);
-			switch (file_split[file_split.length - 1]) {
+			PrintWriter output = new PrintWriter(newFileName);
+			switch (fileSplit[fileSplit.length - 1]) {
 			case "ply":
 				output.print(header);
 				for (Vertex vertex : vertices)
@@ -90,44 +90,44 @@ public class Model {
 			}
 			output.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Problem Writing file: " + new_file_name);
+			System.err.println("Problem Writing file: " + newFileName);
 		}
 		return true;
 	}
 
-	public boolean center(String output_file_name) {
+	public boolean center(String outputFileName) {
 		Vertex average = getAverageVertex();
 		for (Vertex vertex : vertices) {
 			vertex.subtract(average);
 		}
-		return write(output_file_name, "centered");
+		return write(outputFileName, "centered");
 	}
 
-	public boolean whiten(String output_file_name) {
+	public boolean whiten(String outputFileName) {
 		Vertex scalar = getStandardDeviationVertex();
 		for (Vertex vertex : vertices)
 			vertex.divide(scalar);
-		return write(output_file_name, "rounded");
+		return write(outputFileName, "rounded");
 	}
 
 	public void printConsoleInfo(String command) {
 		DecimalFormat df = new DecimalFormat("#.######");
-		Vertex min_vertex = getMinVertex();
-		Vertex max_vertex = getMaxVertex();
-		Vertex standard_deviation = getStandardDeviationVertex();
+		Vertex minVertex = getMinVertex();
+		Vertex maxVertex = getMaxVertex();
+		Vertex standardDeviation = getStandardDeviationVertex();
 		System.out.println("=== " + command);
-		System.out.println(number_of_vertices + " vertices, " + number_of_faces + " polygons");
+		System.out.println(numberOfVertices + " vertices, " + numberOfFaces + " polygons");
 		System.out.println("Mean Vertex = " + getAverageVertex().toStringVertex());
-		System.out.println("Bounding Box: " + df.format(min_vertex.getX()) + " <= x <= " + df.format(max_vertex.getX())
-				+ ", " + df.format(min_vertex.getY()) + " <= y <= " + df.format(max_vertex.getY()) + ", "
-				+ df.format(min_vertex.getZ()) + " <= z <= " + df.format(max_vertex.getZ()));
-		System.out.println("Standard Deviations: x = " + df.format(standard_deviation.getX()) + ", y = "
-				+ df.format(standard_deviation.getY()) + ", z = " + df.format((standard_deviation.getZ())));
+		System.out.println("Bounding Box: " + df.format(minVertex.getX()) + " <= x <= " + df.format(maxVertex.getX())
+				+ ", " + df.format(minVertex.getY()) + " <= y <= " + df.format(maxVertex.getY()) + ", "
+				+ df.format(minVertex.getZ()) + " <= z <= " + df.format(maxVertex.getZ()));
+		System.out.println("Standard Deviations: x = " + df.format(standardDeviation.getX()) + ", y = "
+				+ df.format(standardDeviation.getY()) + ", z = " + df.format((standardDeviation.getZ())));
 	}
 
 	private Vertex getAverageVertex() {
 		Vertex average = new Vertex();
-		Vertex divisor = new Vertex(number_of_vertices, number_of_vertices, number_of_vertices);
+		Vertex divisor = new Vertex(numberOfVertices, numberOfVertices, numberOfVertices);
 		for (Vertex vertex : vertices)
 			average.add(vertex);
 		average.divide(divisor);
@@ -135,48 +135,48 @@ public class Model {
 	}
 
 	private Vertex getMinVertex() {
-		ArrayList<Double> x_values = new ArrayList<Double>();
-		ArrayList<Double> y_values = new ArrayList<Double>();
-		ArrayList<Double> z_values = new ArrayList<Double>();
+		ArrayList<Double> xValues = new ArrayList<Double>();
+		ArrayList<Double> yValues = new ArrayList<Double>();
+		ArrayList<Double> zValues = new ArrayList<Double>();
 		for (Vertex v : vertices) {
-			x_values.add(v.getX());
-			y_values.add(v.getY());
-			z_values.add(v.getZ());
+			xValues.add(v.getX());
+			yValues.add(v.getY());
+			zValues.add(v.getZ());
 		}
-		Collections.sort(x_values);
-		Collections.sort(y_values);
-		Collections.sort(z_values);
-		return new Vertex(x_values.get(0), y_values.get(0), z_values.get(0));
+		Collections.sort(xValues);
+		Collections.sort(yValues);
+		Collections.sort(zValues);
+		return new Vertex(xValues.get(0), yValues.get(0), zValues.get(0));
 	}
 
 	private Vertex getMaxVertex() {
-		ArrayList<Double> x_values = new ArrayList<Double>();
-		ArrayList<Double> y_values = new ArrayList<Double>();
-		ArrayList<Double> z_values = new ArrayList<Double>();
+		ArrayList<Double> xValues = new ArrayList<Double>();
+		ArrayList<Double> yValues = new ArrayList<Double>();
+		ArrayList<Double> zValues = new ArrayList<Double>();
 		for (Vertex v : vertices) {
-			x_values.add(v.getX());
-			y_values.add(v.getY());
-			z_values.add(v.getZ());
+			xValues.add(v.getX());
+			yValues.add(v.getY());
+			zValues.add(v.getZ());
 		}
-		Collections.sort(x_values);
-		Collections.sort(y_values);
-		Collections.sort(z_values);
-		return new Vertex(x_values.get(x_values.size() - 1), y_values.get(y_values.size() - 1),
-				z_values.get(z_values.size() - 1));
+		Collections.sort(xValues);
+		Collections.sort(yValues);
+		Collections.sort(zValues);
+		return new Vertex(xValues.get(xValues.size() - 1), yValues.get(yValues.size() - 1),
+				zValues.get(zValues.size() - 1));
 	}
 
 	private Vertex getStandardDeviationVertex() {
 		Vertex average = getAverageVertex();
-		ArrayList<Vertex> sd_vertices = new ArrayList<Vertex>();
+		ArrayList<Vertex> sdVertices = new ArrayList<Vertex>();
 		for (int i = 0; i < vertices.size(); i++) {
 			double x = Math.pow((vertices.get(i).getX() - average.getX()), 2);
 			double y = Math.pow((vertices.get(i).getY() - average.getY()), 2);
 			double z = Math.pow((vertices.get(i).getZ() - average.getZ()), 2);
-			sd_vertices.add(new Vertex(x, y, z));
+			sdVertices.add(new Vertex(x, y, z));
 		}
 		Vertex standard_deviation = new Vertex();
-		Vertex divisor = new Vertex(number_of_vertices, number_of_vertices, number_of_vertices);
-		for (Vertex vertex : sd_vertices)
+		Vertex divisor = new Vertex(numberOfVertices, numberOfVertices, numberOfVertices);
+		for (Vertex vertex : sdVertices)
 			standard_deviation.add(vertex);
 		standard_deviation.divide(divisor);
 		standard_deviation.squareRoot();
@@ -187,13 +187,13 @@ public class Model {
 		return header;
 	}
 
-	public void setHeader(String new_header) {
-		header = new_header;
+	public void setHeader(String newHeader) {
+		header = newHeader;
 	}
 
 	public void setDefaultHeader() {
-		header = "ply\nformat ascii 1.0\nelement vertex " + number_of_vertices
-				+ "\nproperty float32 x\nproperty float32 y\nproperty float32 z\nelement face " + number_of_faces
+		header = "ply\nformat ascii 1.0\nelement vertex " + numberOfVertices
+				+ "\nproperty float32 x\nproperty float32 y\nproperty float32 z\nelement face " + numberOfFaces
 				+ "\nproperty list uint8 int32 vertex_indices\nend_header\n";
 	}
 
@@ -222,18 +222,18 @@ public class Model {
 	}
 
 	public int getNumberOfVertices() {
-		return number_of_vertices;
+		return numberOfVertices;
 	}
 
-	public void setNumberOfVertices(int new_number_of_vertices) {
-		number_of_vertices = new_number_of_vertices;
+	public void setNumberOfVertices(int newNumberOfVertices) {
+		numberOfVertices = newNumberOfVertices;
 	}
 
 	public int getNumberOfFaces() {
-		return number_of_faces;
+		return numberOfFaces;
 	}
 
-	public void setNumberOfFaces(int new_number_of_faces) {
-		number_of_faces = new_number_of_faces;
+	public void setNumberOfFaces(int newNumberOfFaces) {
+		numberOfFaces = newNumberOfFaces;
 	}
 }

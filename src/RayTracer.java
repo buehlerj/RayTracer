@@ -27,8 +27,8 @@ public class RayTracer {
 		return camera;
 	}
 
-	public void setCamera(Camera new_camera) {
-		camera = new_camera;
+	public void setCamera(Camera newCamera) {
+		camera = newCamera;
 	}
 
 	public Scene getScene() {
