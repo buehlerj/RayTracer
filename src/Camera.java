@@ -58,6 +58,11 @@ public class Camera {
 			System.err.println("Problem Read file: " + inputFileName);
 			return false;
 		}
+		cameraW = eye.minus(look);
+		cameraU = Vertex.crossProduct(up, cameraW);
+		cameraW = cameraW.timesEquals(1 / cameraW.normF());
+		cameraU = cameraU.timesEquals(1 / cameraU.normF());
+		cameraV = Vertex.crossProduct(cameraW, cameraU);
 		return true;
 	}
 

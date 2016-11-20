@@ -29,12 +29,6 @@ public class RayTracer {
 	public Picture capturePicture() {
 		Picture photo = new Picture(camera.getRes()[0], camera.getRes()[1]);
 
-		Matrix cameraW = camera.getEye().minus(camera.getLook());
-		Matrix cameraU = Vertex.crossProduct(camera.getUp(), cameraW);
-		camera.setCameraW(cameraW.timesEquals(1 / cameraW.normF()));
-		camera.setCameraU(cameraU.timesEquals(1 / cameraU.normF()));
-		camera.setCameraV(Vertex.crossProduct(cameraW, cameraU));
-
 		// Add all Rays
 		for (int j = camera.getRes()[1] - 1; j >= 0; j--) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
