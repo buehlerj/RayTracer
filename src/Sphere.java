@@ -11,11 +11,11 @@ public class Sphere {
 		this.color = new Matrix(new double[][] { { red }, { green }, { blue } });
 	}
 
-	public Matrix getCoridnates() {
+	public Matrix getCoordinates() {
 		return coordinates;
 	}
 
-	public void setCordinates(Matrix coordinates) {
+	public void setCoordinates(Matrix coordinates) {
 		this.coordinates = coordinates;
 	}
 

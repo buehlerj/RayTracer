@@ -15,6 +15,7 @@ public class RayTracer {
 
 	public RayTracer() {
 		camera = new Camera();
+		scene = new Scene();
 		models = new ArrayList<Model>();
 		rays = new ArrayList<Ray>();
 		distances = new ArrayList<>();
@@ -23,33 +24,12 @@ public class RayTracer {
 		cameraV = new Matrix(3, 1);
 	}
 
-	public Camera getCamera() {
-		return camera;
+	public boolean setupCamera(String inputFileName) {
+		return camera.read(inputFileName);
 	}
 
-	public void setCamera(Camera newCamera) {
-		camera = newCamera;
-	}
-
-	public Scene getScene() {
-		return scene;
-	}
-
-	public void setScene(Scene newScene) {
-		scene = newScene;
-		camera = newScene.getCamera();
-	}
-
-	public ArrayList<Model> getModels() {
-		return models;
-	}
-
-	public void addModel(Model m) {
-		models.add(m);
-	}
-
-	public void removeModel(Model m) {
-		models.remove(m);
+	public boolean setupScene(String inputFileName) {
+		return scene.read(inputFileName);
 	}
 
 	public Picture capturePicture() {
@@ -70,7 +50,9 @@ public class RayTracer {
 
 		Model m = models.get(0);
 		ArrayList<Double> tValues = new ArrayList<Double>();
-		Vertex aVertex; Vertex bVertex; Vertex cVertex;
+		Vertex aVertex;
+		Vertex bVertex;
+		Vertex cVertex;
 		double a1; double a2; double a3;
 		double b1; double b2; double b3;
 		double c1; double c2; double c3;
@@ -169,5 +151,26 @@ public class RayTracer {
 				max = d;
 		}
 		return max;
+	}
+
+	// GETTERS - SETTERS
+	public Camera getCamera() {
+		return camera;
+	}
+
+	public Scene getScene() {
+		return scene;
+	}
+
+	public ArrayList<Model> getModels() {
+		return models;
+	}
+
+	public void addModel(Model m) {
+		models.add(m);
+	}
+
+	public void removeModel(Model m) {
+		models.remove(m);
 	}
 }

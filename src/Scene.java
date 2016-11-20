@@ -6,18 +6,18 @@ import java.util.Scanner;
 import Jama.Matrix;
 
 public class Scene {
-	private Camera camera;
 	private Matrix ambient;
-	private Matrix model;
 	private ArrayList<Light> lights;
 	private ArrayList<Sphere> spheres;
+	private Matrix model;
 	
-	public Scene(String inputFileScene) {
-		camera = new Camera();
-		camera.read(inputFileScene);
+	public Scene() {
 		lights = new ArrayList<Light>();
 		spheres = new ArrayList<Sphere>();
-		File inputFile = new File(inputFileScene);
+	}
+
+	public boolean read(String inputFileName) {
+		File inputFile = new File(inputFileName);
 		try {
 			Scanner input = new Scanner(inputFile);
 			while (input.hasNext()) {
@@ -40,16 +40,10 @@ public class Scene {
 			}
 			input.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Problem Read file: " + inputFileScene);
+			System.err.println("Problem Read file: " + inputFileName);
+			return false;
 		}
-	}
-
-	public Camera getCamera() {
-		return camera;
-	}
-
-	public void setCamera(Camera camera) {
-		this.camera = camera;
+		return true;
 	}
 
 	public Matrix getAmbient() {
@@ -82,5 +76,22 @@ public class Scene {
 
 	public void setModel(Matrix model) {
 		this.model = model;
+	}
+
+	public String toString() {
+		String sceneString = "";
+		sceneString += "Ambient: " + Utils.MatrixToStringOneLine(ambient) + "\n";
+		for (Light l : lights) {
+			sceneString += "Light:\n";
+			sceneString += "   Coordinates: " + Utils.MatrixToStringOneLine(l.getCoordinates()) + "\n";
+			sceneString += "   Color: " + Utils.MatrixToStringOneLine(l.getColor()) + "\n\n";
+		}
+		for (Sphere s : spheres) {
+			sceneString += "Sphere:\n";
+			sceneString += "   Coordinates: " + Utils.MatrixToStringOneLine(s.getCoordinates()) + "\n";
+			sceneString += "   Radius: " + s.getRadius() + "\n";
+			sceneString += "   Color: " + Utils.MatrixToStringOneLine(s.getColor()) + "\n\n";
+		}
+		return sceneString;
 	}
 }
