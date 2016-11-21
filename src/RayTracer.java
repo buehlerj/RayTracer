@@ -42,12 +42,13 @@ public class RayTracer {
 		double b1; double b2; double b3;
 		double c1; double c2; double c3;
 		double d1; double d2; double d3;
-		Matrix pixel; Matrix D; Matrix M; Matrix y; Matrix x;
+		Matrix rayOrigin; Matrix rayDirection; Matrix D; Matrix M; Matrix y; Matrix x;
 		double beta; double gamma; double t;
 		for (int i = 0; i < rays.size(); i++) {
 			tValues.clear();
-			pixel = rays.get(i).getLocation();
-			D = pixel.minus(camera.getEye());
+			rayOrigin = rays.get(i).getLocation();
+			rayDirection = rays.get(i).getDirection();
+			D = rayOrigin.minus(camera.getEye());
 			D = D.timesEquals(1 / D.normF());
 			c1 = D.get(0, 0);
 			c2 = D.get(1, 0);
@@ -64,9 +65,9 @@ public class RayTracer {
 					b1 = aVertex.getX() - cVertex.getX();
 					b2 = aVertex.getY() - cVertex.getY();
 					b3 = aVertex.getZ() - cVertex.getZ();
-					d1 = aVertex.getX() - pixel.get(0, 0);
-					d2 = aVertex.getY() - pixel.get(1, 0);
-					d3 = aVertex.getZ() - pixel.get(2, 0);
+					d1 = aVertex.getX() - rayOrigin.get(0, 0);
+					d2 = aVertex.getY() - rayOrigin.get(1, 0);
+					d3 = aVertex.getZ() - rayOrigin.get(2, 0);
 					M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
 					y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
 					x = M.solve(y);
@@ -79,7 +80,24 @@ public class RayTracer {
 					}
 				}
 			}
+
 			// Ray Trace on all Sphere Models
+			Matrix rayToCenter;
+			double v; double bsq; double disc;
+			for (Sphere s : scene.getSpheres()) {
+				rayToCenter = new Matrix(new double[][] {
+					{s.getX() - rayOrigin.get(0, 0)},
+					{s.getY() - rayOrigin.get(1, 0)},
+					{s.getZ() - rayOrigin.get(2, 0)}
+				});
+				v = Utils.dotProduct(rayToCenter, rayDirection);
+				bsq = Utils.dotProduct(rayToCenter, rayToCenter);
+				disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
+				if (disc > 0)
+					tValues.add(disc);
+			}
+
+			// Compare all distance values
 			if (tValues.isEmpty()) {
 				distances.add(null);
 			} else {
@@ -100,6 +118,12 @@ public class RayTracer {
 				photo.addToPixels(new Pixel(r, g, b));
 			}
 		}
+		return photo;
+	}
+
+	public Picture captureLightedPicture() {
+		Picture photo = capturePicture();
+		
 		return photo;
 	}
 

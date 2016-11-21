@@ -19,12 +19,24 @@ public class Sphere {
 		this.coordinates = coordinates;
 	}
 
+	public double getX() {
+		return coordinates.get(0, 0);
+	}
+
 	public void setX(double x) {
 		coordinates.set(0, 0, x);
 	}
 
+	public double getY() {
+		return coordinates.get(1, 0);
+	}
+
 	public void setY(double y) {
 		coordinates.set(1, 0, y);
+	}
+
+	public double getZ() {
+		return coordinates.get(2, 0);
 	}
 
 	public void setZ(double z) {

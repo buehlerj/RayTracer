@@ -25,4 +25,8 @@ public class Utils {
 		}
 		return matrix;
 	}
+
+	public static double dotProduct(Matrix m1, Matrix m2) {
+		return m1.get(0, 0) * m2.get(0, 0) + m1.get(1, 0) * m2.get(1, 0) + m1.get(2, 0) * m2.get(2, 0);
+	}
 }
