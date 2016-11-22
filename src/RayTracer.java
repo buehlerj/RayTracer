@@ -143,9 +143,9 @@ public class RayTracer {
 
 	public Ray rayPt(int i, int j) {
 		Matrix point = pixelPt(i, j);
-		Matrix ray = point.minus(camera.getCameraV());
-		ray = ray.timesEquals(1 / ray.normF());
-		return new Ray(point, point.plus(ray.times(camera.getD())));
+//		Matrix ray = point.minus(camera.getCameraV());
+//		ray = ray.timesEquals(1 / ray.normF());
+		return new Ray(point, camera.getEye().plus(point));
 	}
 
 	public double getMin(ArrayList<Double> list) {
