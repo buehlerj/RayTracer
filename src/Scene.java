@@ -10,8 +10,9 @@ public class Scene {
 	private ArrayList<Light> lights;
 	private ArrayList<Sphere> spheres;
 	private Matrix model;
-	
+
 	public Scene() {
+		ambient = new Matrix(1, 3);
 		lights = new ArrayList<Light>();
 		spheres = new ArrayList<Sphere>();
 	}
@@ -28,7 +29,7 @@ public class Scene {
 					break;
 				case "light":
 					Light light = new Light(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
-					 lights.add(light);
+					lights.add(light);
 					break;
 				case "sphere":
 					Sphere sphere = new Sphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());

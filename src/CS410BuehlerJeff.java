@@ -8,7 +8,7 @@ public class CS410BuehlerJeff {
 
 	public static void PA4(String[] args) {
 		RayTracer rayTracer = new RayTracer();
-		if (args.length < 3) {
+		if (args.length != 2) {
 			System.err.println("Incorrect number of argments: " + args.length);
 			System.exit(-1);
 		}

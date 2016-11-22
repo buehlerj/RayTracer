@@ -20,6 +20,12 @@ public class Camera {
 	private Matrix cameraV;
 
 	public Camera() {
+		eye = new Matrix(1, 3);
+		look = new Matrix(1, 3);
+		up = new Matrix(1, 3);
+		cameraW = new Matrix(1, 3);
+		cameraU = new Matrix(1, 3);
+		cameraV = new Matrix(1, 3);
 	}
 
 	public boolean read(String inputFileName) {

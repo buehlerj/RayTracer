@@ -1,8 +1,10 @@
 
 public class Pixel {
-	public int r = 239;
-	public int g = 239;
-	public int b = 239;
+	private int r = 0;
+	private int g = 0;
+	private int b = 0;
+	private String type;
+	private int index;
 
 	Pixel() {
 	}
@@ -19,8 +21,20 @@ public class Pixel {
 		this.b = (int) Math.round(b);
 	}
 
-	public String toString() {
-		return r + " " + g + " " + b;
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+	
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public boolean equals(Pixel a) {
@@ -31,5 +45,9 @@ public class Pixel {
 		this.r = r;
 		this.g = g;
 		this.b = b;
+	}
+
+	public String toString() {
+		return r + " " + g + " " + b;
 	}
 }

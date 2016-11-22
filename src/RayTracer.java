@@ -82,26 +82,27 @@ public class RayTracer {
 			}
 
 			// Ray Trace on all Sphere Models
-			Matrix rayToCenter;
+			Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
 			double v; double bsq; double disc;
 			for (Sphere s : scene.getSpheres()) {
-				rayToCenter = new Matrix(new double[][] {
-					{s.getX() - rayOrigin.get(0, 0)},
-					{s.getY() - rayOrigin.get(1, 0)},
-					{s.getZ() - rayOrigin.get(2, 0)}
-				});
-				v = Utils.dotProduct(rayToCenter, rayDirection);
-				bsq = Utils.dotProduct(rayToCenter, rayToCenter);
+				Cv = s.getCoordinates();
+				Lv = rayOrigin;
+				Uv = rayDirection;
+				Tv = Cv.minus(Lv);
+				v = Utils.dotProduct(Tv, Uv);
+				bsq = Utils.dotProduct(Tv, Tv);
 				disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
-				if (disc > 0)
+				if (disc > 0) {
 					tValues.add(disc);
+				}
 			}
 
 			// Compare all distance values
 			if (tValues.isEmpty()) {
 				distances.add(null);
 			} else {
-				distances.add(Collections.min(tValues));
+				int smallestDistanceIndex = tValues.indexOf(Collections.min(tValues));
+				distances.add(tValues.get(smallestDistanceIndex));
 			}
 		}
 
@@ -123,7 +124,6 @@ public class RayTracer {
 
 	public Picture captureLightedPicture() {
 		Picture photo = capturePicture();
-		
 		return photo;
 	}
 
