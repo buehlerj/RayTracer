@@ -7,19 +7,20 @@ public class RayTracer {
 	private Camera camera;
 	private Scene scene;
 	private ArrayList<Model> models;
-	private ArrayList<Ray> rays;
-	private ArrayList<Double> distances;
+	private Ray[][] rays;
+	private Double[][] distances;
 
 	public RayTracer() {
 		camera = new Camera();
 		scene = new Scene();
 		models = new ArrayList<Model>();
-		rays = new ArrayList<Ray>();
-		distances = new ArrayList<>();
 	}
 
 	public boolean setupCamera(String inputFileName) {
-		return camera.read(inputFileName);
+		boolean cameraRead = camera.read(inputFileName);
+		rays = new Ray[camera.getRes()[0]][camera.getRes()[1]];
+		distances = new Double[camera.getRes()[0]][camera.getRes()[1]];
+		return cameraRead;
 	}
 
 	public boolean setupScene(String inputFileName) {
@@ -32,7 +33,7 @@ public class RayTracer {
 		// Add all Rays
 		for (int j = camera.getRes()[1] - 1; j >= 0; j--) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-				rays.add(rayPt(i, j));
+				rays[i][j] = rayPt(i, j);
 			}
 		}
 
@@ -44,79 +45,87 @@ public class RayTracer {
 		double d1; double d2; double d3;
 		Matrix rayOrigin; Matrix rayDirection; Matrix D; Matrix M; Matrix y; Matrix x;
 		double beta; double gamma; double t;
-		for (int i = 0; i < rays.size(); i++) {
-			tValues.clear();
-			rayOrigin = rays.get(i).getLocation();
-			rayDirection = rays.get(i).getDirection();
-			D = rayOrigin.minus(camera.getEye());
-			D = D.timesEquals(1 / D.normF());
-			c1 = D.get(0, 0);
-			c2 = D.get(1, 0);
-			c3 = D.get(2, 0);
-			// Ray Trace on all Polygonal Models
-			for (Model m : models) {
-				for (Face f : m.getFaces()) {
-					aVertex = m.getVertices().get(f.getVertexIndices().get(0));
-					bVertex = m.getVertices().get(f.getVertexIndices().get(1));
-					cVertex = m.getVertices().get(f.getVertexIndices().get(2));
-					a1 = aVertex.getX() - bVertex.getX();
-					a2 = aVertex.getY() - bVertex.getY();
-					a3 = aVertex.getZ() - bVertex.getZ();
-					b1 = aVertex.getX() - cVertex.getX();
-					b2 = aVertex.getY() - cVertex.getY();
-					b3 = aVertex.getZ() - cVertex.getZ();
-					d1 = aVertex.getX() - rayOrigin.get(0, 0);
-					d2 = aVertex.getY() - rayOrigin.get(1, 0);
-					d3 = aVertex.getZ() - rayOrigin.get(2, 0);
-					M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
-					y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
-					x = M.solve(y);
+		for (int j = 0; j < camera.getRes()[1]; j++) {
+			for (int i = 0; i < camera.getRes()[0]; i++) {
+				tValues.clear();
+				rayOrigin = rays[i][j].getLocation();
+				rayDirection = rays[i][j].getDirection();
+				D = rayOrigin.minus(camera.getEye());
+				D = D.timesEquals(1 / D.normF());
+				c1 = D.get(0, 0);
+				c2 = D.get(1, 0);
+				c3 = D.get(2, 0);
+				// Ray Trace on all Polygonal Models
+				for (Model m : models) {
+					for (Face f : m.getFaces()) {
+						aVertex = m.getVertices().get(f.getVertexIndices().get(0));
+						bVertex = m.getVertices().get(f.getVertexIndices().get(1));
+						cVertex = m.getVertices().get(f.getVertexIndices().get(2));
+						a1 = aVertex.getX() - bVertex.getX();
+						a2 = aVertex.getY() - bVertex.getY();
+						a3 = aVertex.getZ() - bVertex.getZ();
+						b1 = aVertex.getX() - cVertex.getX();
+						b2 = aVertex.getY() - cVertex.getY();
+						b3 = aVertex.getZ() - cVertex.getZ();
+						d1 = aVertex.getX() - rayOrigin.get(0, 0);
+						d2 = aVertex.getY() - rayOrigin.get(1, 0);
+						d3 = aVertex.getZ() - rayOrigin.get(2, 0);
+						M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
+						y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
+						x = M.solve(y);
 
-					beta = x.get(0, 0);
-					gamma = x.get(1, 0);
-					t = x.get(2, 0);
-					if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-						tValues.add(t);
+						beta = x.get(0, 0);
+						gamma = x.get(1, 0);
+						t = x.get(2, 0);
+						if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
+							tValues.add(t);
+						}
 					}
 				}
-			}
 
-			// Ray Trace on all Sphere Models
-			Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
-			double v; double bsq; double disc;
-			for (Sphere s : scene.getSpheres()) {
-				Cv = s.getCoordinates();
-				Lv = rayOrigin;
-				Uv = rayDirection;
-				Tv = Cv.minus(Lv);
-				v = Utils.dotProduct(Tv, Uv);
-				bsq = Utils.dotProduct(Tv, Tv);
-				disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
-				if (disc > 0) {
-					tValues.add(disc);
+				// Ray Trace on all Sphere Models
+				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
+				double v; double bsq; double disc;
+				for (Sphere s : scene.getSpheres()) {
+					Cv = s.getCoordinates();
+					Lv = rayOrigin;
+					Uv = rayDirection;
+					Tv = Cv.minus(Lv);
+					v = Utils.dotProduct(Tv, Uv);
+					bsq = Utils.dotProduct(Tv, Tv);
+					disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
+					if (disc > 0) {
+						tValues.add(disc);
+					}
 				}
-			}
 
-			// Compare all distance values
-			if (tValues.isEmpty()) {
-				distances.add(null);
-			} else {
-				int smallestDistanceIndex = tValues.indexOf(Collections.min(tValues));
-				distances.add(tValues.get(smallestDistanceIndex));
+				// Compare all distance values
+				if (tValues.isEmpty()) {
+					distances[i][j] = null;
+				} else {
+					int smallestDistanceIndex = tValues.indexOf(Collections.min(tValues));
+					distances[i][j] = tValues.get(smallestDistanceIndex);
+				}
 			}
 		}
 
 		double min = getMin(distances);
 		double max = getMax(distances);
-		for (Double distance : distances) {
-			if (distance == null) {
-				photo.addToPixels(new Pixel());
-			} else {
-				double ratio = 2 * (distance - min) / (max - min);
-				double r = Math.max(0, 255 * (1 - ratio));
-				double b = Math.max(0, 255 * (ratio - 1));
-				double g = 255 - b - r;
-				photo.addToPixels(new Pixel(r, g, b));
+		Double distance;
+		int jIndex;
+		for (int j = 0; j < distances[0].length; j++) {
+			for (int i = 0; i < distances.length; i++) {
+				jIndex = distances[0].length - j - 1;
+				distance = distances[i][j];
+				if (distance == null) {
+					photo.addToPixels(i, jIndex, new Pixel());
+				} else {
+					double ratio = 2 * (distance - min) / (max - min);
+					double r = Math.max(0, 255 * (1 - ratio));
+					double b = Math.max(0, 255 * (ratio - 1));
+					double g = 255 - b - r;
+					photo.addToPixels(i, jIndex, new Pixel(r, g, b));
+				}
 			}
 		}
 		return photo;
@@ -143,25 +152,31 @@ public class RayTracer {
 
 	public Ray rayPt(int i, int j) {
 		Matrix point = pixelPt(i, j);
-//		Matrix ray = point.minus(camera.getCameraV());
-//		ray = ray.timesEquals(1 / ray.normF());
+		//		Matrix ray = point.minus(camera.getCameraV());
+		//		ray = ray.timesEquals(1 / ray.normF());
 		return new Ray(point, camera.getEye().plus(point));
 	}
 
-	public double getMin(ArrayList<Double> list) {
+	public double getMin(Double[][] list) {
 		double min = 100000000;
-		for (Double d : list) {
-			if (d != null && d < min)
-				min = d;
+		for (int j = 0; j < list[0].length; j++) {
+			for (int i = 0; i < list.length; i++) {
+				Double d = list[i][j];
+				if (d != null && d < min)
+					min = d;
+			}
 		}
 		return min;
 	}
 
-	public double getMax(ArrayList<Double> list) {
+	public double getMax(Double[][] list) {
 		double max = -1;
-		for (Double d : list) {
-			if (d != null && d > max)
-				max = d;
+		for (int j = 0; j < list[0].length; j++) {
+			for (int i = 0; i < list.length; i++) {
+				Double d = list[i][j];
+				if (d != null && d > max)
+					max = d;
+			}
 		}
 		return max;
 	}

@@ -1,31 +1,19 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 public class Picture {
 	int width;
 	int height;
-	ArrayList<Pixel> pixels = new ArrayList<Pixel>();
+	Pixel[][] pixels;
 
 	Picture(int width, int height) {
 		this.width = width;
 		this.height = height;
+		pixels = new Pixel[height][width];
 	}
 
-	public ArrayList<Pixel> getPixels() {
-		return pixels;
-	}
-
-	public void addToPixels(Pixel p) {
-		pixels.add(p);
-	}
-
-	public void removeFromPixels(Pixel p) {
-		pixels.remove(p);
-	}
-
-	public void setPixels(ArrayList<Pixel> newPixels) {
-		pixels = newPixels;
+	public void addToPixels(int i, int j, Pixel p) {
+		pixels[j][i] = p;
 	}
 
 	public boolean write(String outputFileName, String nameModifier) {
@@ -52,10 +40,11 @@ public class Picture {
 	@Override
 	public String toString() {
 		String allPixelsString = "";
-		for (int i = 0; i < pixels.size(); i++) {
-			allPixelsString += pixels.get(i) + " ";
-			if (i % width == width - 1)
-				allPixelsString += "\n";
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				allPixelsString += pixels[i][j] + " ";
+			}
+			allPixelsString += "\n";
 		}
 		return allPixelsString;
 	}

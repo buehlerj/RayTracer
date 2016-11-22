@@ -3,7 +3,7 @@ import java.util.Arrays;
 public class CS410BuehlerJeff {
 
 	public static void main(String[] args) {
-		PA4(args);
+		PA3(args);
 	}
 
 	public static void PA4(String[] args) {
@@ -39,7 +39,7 @@ public class CS410BuehlerJeff {
 			System.exit(-1);
 		}
 
-		if (!rayTracer.getCamera().read(args[0])) {
+		if (!rayTracer.setupCamera(args[0])) {
 			System.exit(-1);
 		}
 
