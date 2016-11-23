@@ -8,58 +8,139 @@ import java.util.Scanner;
 
 public class Model {
 	String header = "";
+	String extension;
+	String material;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	ArrayList<Face> faces = new ArrayList<Face>();
 	int numberOfVertices = 0;
 	int numberOfFaces = 0;
+	ArrayList<Material> materials = new ArrayList<>();
 
-	Model() {
-	}
-
-	public boolean read(String input_file_name) {
-		File input_file = new File(input_file_name);
-		boolean reading_header = true;
-		int vertex_count = 0;
-		int face_count = 0;
-		try {
-			Scanner input = new Scanner(input_file);
-			while (input.hasNext()) {
-				if (reading_header) {
-					String next = input.nextLine();
-					header += next + "\n";
-					if (next.equals("end_header"))
-						reading_header = false;
-					if (next.contains("element vertex"))
-						numberOfVertices = Integer.valueOf(next.split("\\s+")[2]);
-					if (next.contains("element face"))
-						numberOfFaces = Integer.valueOf(next.split("\\s+")[2]);
-				} else {
-					if (vertex_count < numberOfVertices) {
-						Vertex input_vertex = new Vertex(input.nextDouble(), input.nextDouble(), input.nextDouble());
-						vertices.add(input_vertex);
-						vertex_count++;
-					} else if (face_count < numberOfFaces) {
-						String line = input.nextLine();
-						if (!line.isEmpty()) {
-							ArrayList<Integer> face_vertices = new ArrayList<Integer>();
-							for (String s : line.split("\\s"))
-								face_vertices.add(Integer.valueOf(s));
-							if (!face_vertices.isEmpty()) {
-								Face input_face = new Face(face_vertices);
-								faces.add(input_face);
-								face_count++;
+	public boolean read(String inputFileName) {
+		int extensionPeriodIndex = inputFileName.lastIndexOf('.') + 1;
+		extension = inputFileName.substring(extensionPeriodIndex, inputFileName.length());
+		File inputFile = new File(inputFileName);
+		switch(extension) {
+		case "ply":
+			boolean readingHeader = true;
+			int vertexCount = 0;
+			int faceCount = 0;
+			try {
+				Scanner input = new Scanner(inputFile);
+				while (input.hasNext()) {
+					if (readingHeader) {
+						String next = input.nextLine();
+						header += next + "\n";
+						if (next.equals("end_header"))
+							readingHeader = false;
+						if (next.contains("element vertex"))
+							numberOfVertices = Integer.valueOf(next.split("\\s+")[2]);
+						if (next.contains("element face"))
+							numberOfFaces = Integer.valueOf(next.split("\\s+")[2]);
+					} else {
+						if (vertexCount < numberOfVertices) {
+							Vertex inputVertex = new Vertex(input.nextDouble(), input.nextDouble(), input.nextDouble());
+							vertices.add(inputVertex);
+							vertexCount++;
+						} else if (faceCount < numberOfFaces) {
+							String line = input.nextLine();
+							if (!line.isEmpty()) {
+								ArrayList<Integer> faceVertices = new ArrayList<Integer>();
+								for (String s : line.split("\\s"))
+									faceVertices.add(Integer.valueOf(s));
+								if (!faceVertices.isEmpty()) {
+									Face inputFace = new Face(faceVertices);
+									faces.add(inputFace);
+									faceCount++;
+								}
 							}
-						}
-					} else
-						input.nextLine();
+						} else
+							input.nextLine();
+					}
 				}
+				input.close();
+			} catch (FileNotFoundException e) {
+				System.err.println("Problem Read file: " + inputFileName);
+				return false;
 			}
-			input.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Problem Read file: " + input_file_name);
-			return false;
+			return true;
+		case "obj":
+			String materialLibraryFile = "";
+			try {
+				Scanner input = new Scanner(inputFile);
+				while (input.hasNext()) {
+					String next = input.next();
+					switch(next) {
+					case "#":
+						break;
+					case "mtllib":
+						materialLibraryFile = input.next();
+						break;
+					case "o":
+						break;
+					case "v":
+						Vertex inputVertex = new Vertex(input.nextDouble(), input.nextDouble(), input.nextDouble());
+						vertices.add(inputVertex);
+						break;
+					case "usemtl":
+						material = input.next();
+						break;
+					case "f":
+						Face inputFace = new Face();
+						String line = input.nextLine();
+						for (String s : line.split("\\s")) {
+							String vertexIndex = s.split("//")[0];
+							if (!vertexIndex.isEmpty())
+								inputFace.addToVertexIndices(Integer.valueOf(s.split("//")[0]) - 1);
+						}
+						faces.add(inputFace);
+						break;
+					}
+				}
+				input.close();
+				if (!materialLibraryFile.isEmpty()) {
+					Material inputMaterial = null;
+					File inputMaterialFile = new File(materialLibraryFile);
+					Scanner materialInput = new Scanner(inputMaterialFile);
+					while (materialInput.hasNext()) {
+						String next = materialInput.next();
+						switch(next) {
+						case "#":
+							next = materialInput.nextLine();
+							break;
+						case "newmtl":
+							inputMaterial = new Material(materialInput.next(), this);
+							materials.add(inputMaterial);
+							break;
+						case "Ns":
+							inputMaterial.setNs(materialInput.nextDouble());
+							break;
+						case "Ka":
+							inputMaterial.setKa(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+							break;
+						case "Kd":
+							inputMaterial.setKd(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+							break;
+						case "Ks":
+							inputMaterial.setKs(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+							break;
+						case "d":
+							inputMaterial.setD(materialInput.nextDouble());
+							break;
+						case "illum":
+							inputMaterial.setIllum(materialInput.nextDouble());
+							break;
+						}
+					}
+					materialInput.close();
+				}
+			} catch (FileNotFoundException e) {
+				System.err.println("Problem Read file: " + inputFileName);
+				return false;
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@SuppressWarnings("resource")
@@ -174,13 +255,13 @@ public class Model {
 			double z = Math.pow((vertices.get(i).getZ() - average.getZ()), 2);
 			sdVertices.add(new Vertex(x, y, z));
 		}
-		Vertex standard_deviation = new Vertex();
+		Vertex standardDeviation = new Vertex();
 		Vertex divisor = new Vertex(numberOfVertices, numberOfVertices, numberOfVertices);
 		for (Vertex vertex : sdVertices)
-			standard_deviation.add(vertex);
-		standard_deviation.divide(divisor);
-		standard_deviation.squareRoot();
-		return standard_deviation;
+			standardDeviation.add(vertex);
+		standardDeviation.divide(divisor);
+		standardDeviation.squareRoot();
+		return standardDeviation;
 	}
 
 	public String getHeader() {
@@ -235,5 +316,22 @@ public class Model {
 
 	public void setNumberOfFaces(int newNumberOfFaces) {
 		numberOfFaces = newNumberOfFaces;
+	}
+
+	public ArrayList<Material> getMaterials() {
+		return materials;
+	}
+
+	public void addMaterials(Material material) {
+		this.materials.add(material);
+	}
+
+	public void swapYZ(){
+		for (Vertex v : vertices) {
+			double y = v.getY();
+			double z = v.getZ();
+			v.setZ(y);
+			v.setY(z * -1);
+		}
 	}
 }

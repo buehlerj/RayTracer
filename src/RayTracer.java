@@ -24,6 +24,7 @@ public class RayTracer {
 	}
 
 	public boolean setupScene(String inputFileName) {
+		models = scene.readModels(inputFileName);
 		return scene.read(inputFileName);
 	}
 

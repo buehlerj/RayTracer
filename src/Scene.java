@@ -9,7 +9,6 @@ public class Scene {
 	private Matrix ambient;
 	private ArrayList<Light> lights;
 	private ArrayList<Sphere> spheres;
-	private Matrix model;
 
 	public Scene() {
 		ambient = new Matrix(1, 3);
@@ -18,6 +17,7 @@ public class Scene {
 	}
 
 	public boolean read(String inputFileName) {
+		ArrayList<Model> models = new ArrayList<>();
 		File inputFile = new File(inputFileName);
 		try {
 			Scanner input = new Scanner(inputFile);
@@ -36,6 +36,16 @@ public class Scene {
 					spheres.add(sphere);
 					break;
 				case "model":
+					Model m = new Model();
+					double a = input.nextDouble();
+					double b = input.nextDouble();
+					double c = input.nextDouble();
+					double d = input.nextDouble();
+					double e = input.nextDouble();
+					double f = input.nextDouble();
+					double g = input.nextDouble();
+					m.read(input.next());
+					models.add(m);
 					break;
 				}
 			}
@@ -45,6 +55,36 @@ public class Scene {
 			return false;
 		}
 		return true;
+	}
+
+	public ArrayList<Model> readModels(String inputFileName) {
+		ArrayList<Model> models = new ArrayList<>();
+		File inputFile = new File(inputFileName);
+		try {
+			Scanner input = new Scanner(inputFile);
+			while (input.hasNext()) {
+				String keyTerm = input.next();
+				switch (keyTerm) {
+				case "model":
+					Model m = new Model();
+					double a = input.nextDouble();
+					double b = input.nextDouble();
+					double c = input.nextDouble();
+					double d = input.nextDouble();
+					double e = input.nextDouble();
+					double f = input.nextDouble();
+					double g = input.nextDouble();
+					m.read(input.next());
+					models.add(m);
+					break;
+				}
+			}
+			input.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Problem Read file: " + inputFileName);
+			return null;
+		}
+		return models;
 	}
 
 	public Matrix getAmbient() {
@@ -69,14 +109,6 @@ public class Scene {
 
 	public void setSphere(ArrayList<Sphere> spheres) {
 		this.spheres = spheres;
-	}
-
-	public Matrix getModel() {
-		return model;
-	}
-
-	public void setModel(Matrix model) {
-		this.model = model;
 	}
 
 	public String toString() {
