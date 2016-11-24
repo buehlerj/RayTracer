@@ -57,6 +57,8 @@ public class Camera {
 					resx = input.nextInt();
 					resy = input.nextInt();
 					break;
+				default:
+					keyTerm = input.nextLine();
 				}
 			}
 			input.close();

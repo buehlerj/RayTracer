@@ -6,6 +6,7 @@ public class RayTracer {
 	private Camera camera;
 	private Scene scene;
 	private ArrayList<Model> models;
+	private ArrayList<Sphere> spheres;
 	private Ray[][] rays;
 	private Double[][] distances;
 	private ArrayList<Material> materials;
@@ -14,6 +15,7 @@ public class RayTracer {
 		camera = new Camera();
 		scene = new Scene();
 		models = new ArrayList<>();
+		spheres = new ArrayList<>();
 		materials = new ArrayList<>();
 	}
 
@@ -25,7 +27,9 @@ public class RayTracer {
 	}
 
 	public boolean setupScene(String inputFileName) {
-		models = scene.read(inputFileName);
+		boolean sceneAmbient = scene.read(inputFileName);
+		models = scene.readModels(inputFileName);
+		spheres = scene.readSpheres(inputFileName);
 		ArrayList<Material> newMaterials;
 		for (Model m : models) {
 			newMaterials = m.readMaterials();
@@ -33,7 +37,7 @@ public class RayTracer {
 				addMaterial(mat);
 			}
 		}
-		return true;
+		return sceneAmbient;
 	}
 
 	public Picture capturePicture() {
@@ -99,7 +103,7 @@ public class RayTracer {
 				// Ray Trace on all Sphere Models
 				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
 				double v; double bsq; double disc;
-				for (Sphere s : scene.getSpheres()) {
+				for (Sphere s : getSpheres()) {
 					Cv = s.getCoordinates();
 					Lv = rayOrigin;
 					Uv = rayDirection;
@@ -217,6 +221,18 @@ public class RayTracer {
 		models.remove(m);
 	}
 
+	public ArrayList<Sphere> getSpheres() {
+		return spheres;
+	}
+
+	public void addSphere(Sphere s) {
+		spheres.add(s);
+	}
+
+	public void removeSphere(Sphere s) {
+		spheres.remove(s);
+	}
+
 	public ArrayList<Material> getMaterials() {
 		return materials;
 	}
@@ -231,5 +247,18 @@ public class RayTracer {
 				return m;
 		}
 		return null;
+	}
+
+	public String toString() {
+		String rayTracerString = "";
+		rayTracerString += camera + "\n";
+		rayTracerString += scene + "\n";
+		for (Sphere s : spheres) {
+			rayTracerString += "Sphere:\n";
+			rayTracerString += "   Coordinates: " + Utils.MatrixToStringOneLine(s.getCoordinates()) + "\n";
+			rayTracerString += "   Radius: " + s.getRadius() + "\n";
+			rayTracerString += "   Color: " + Utils.MatrixToStringOneLine(s.getColor()) + "\n\n";
+		}
+		return rayTracerString;
 	}
 }

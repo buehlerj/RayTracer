@@ -24,8 +24,7 @@ public class CS410BuehlerJeff {
 		image.write(args[args.length - 1], "");
 
 		System.out.println("\n\n\n\n----------------- STATS -----------------\n");
-		System.out.println(rayTracer.getCamera());
-		System.out.println(rayTracer.getScene());
+		System.out.println(rayTracer);
 		System.out.println("Wrote to: " + args[args.length - 1]);
 		System.out.println("\n\n\n\n----------------- EXIT -----------------");
 	}
