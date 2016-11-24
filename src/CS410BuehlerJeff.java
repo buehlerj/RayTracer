@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CS410BuehlerJeff {
@@ -20,9 +19,6 @@ public class CS410BuehlerJeff {
 		if (!rayTracer.setupScene(args[0])) {
 			System.exit(-1);
 		}
-		
-		// TODO: Change axis, undo when done
-		rayTracer.getModels().get(0).swapYZ();
 
 		Picture image = rayTracer.capturePicture();
 		image.write(args[args.length - 1], "");

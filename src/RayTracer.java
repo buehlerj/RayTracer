@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 import Jama.Matrix;
 
@@ -9,11 +8,13 @@ public class RayTracer {
 	private ArrayList<Model> models;
 	private Ray[][] rays;
 	private Double[][] distances;
+	private ArrayList<Material> materials;
 
 	public RayTracer() {
 		camera = new Camera();
 		scene = new Scene();
-		models = new ArrayList<Model>();
+		models = new ArrayList<>();
+		materials = new ArrayList<>();
 	}
 
 	public boolean setupCamera(String inputFileName) {
@@ -24,8 +25,15 @@ public class RayTracer {
 	}
 
 	public boolean setupScene(String inputFileName) {
-		models = scene.readModels(inputFileName);
-		return scene.read(inputFileName);
+		models = scene.read(inputFileName);
+		ArrayList<Material> newMaterials;
+		for (Model m : models) {
+			newMaterials = m.readMaterials();
+			for (Material mat : newMaterials) {
+				addMaterial(mat);
+			}
+		}
+		return true;
 	}
 
 	public Picture capturePicture() {
@@ -38,7 +46,8 @@ public class RayTracer {
 			}
 		}
 
-		ArrayList<Double> tValues = new ArrayList<Double>();
+//		ArrayList<Double> tValues = new ArrayList<Double>();
+		double currentT;
 		Vertex aVertex; Vertex bVertex; Vertex cVertex;
 		double a1; double a2; double a3;
 		double b1; double b2; double b3;
@@ -48,7 +57,7 @@ public class RayTracer {
 		double beta; double gamma; double t;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-				tValues.clear();
+				currentT = -1;
 				rayOrigin = rays[i][j].getLocation();
 				rayDirection = rays[i][j].getDirection();
 				D = rayOrigin.minus(camera.getEye());
@@ -79,7 +88,10 @@ public class RayTracer {
 						gamma = x.get(1, 0);
 						t = x.get(2, 0);
 						if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-							tValues.add(t);
+							if (currentT == -1)
+								currentT = t;
+							else if (t < currentT)
+								currentT = t;
 						}
 					}
 				}
@@ -96,16 +108,18 @@ public class RayTracer {
 					bsq = Utils.dotProduct(Tv, Tv);
 					disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
 					if (disc > 0) {
-						tValues.add(disc);
+						if (currentT == -1)
+							currentT = disc;
+						else if (disc < currentT)
+							currentT = disc;
 					}
 				}
 
 				// Compare all distance values
-				if (tValues.isEmpty()) {
+				if (currentT == -1) {
 					distances[i][j] = null;
 				} else {
-					int smallestDistanceIndex = tValues.indexOf(Collections.min(tValues));
-					distances[i][j] = tValues.get(smallestDistanceIndex);
+					distances[i][j] = currentT;
 				}
 			}
 		}
@@ -201,5 +215,21 @@ public class RayTracer {
 
 	public void removeModel(Model m) {
 		models.remove(m);
+	}
+
+	public ArrayList<Material> getMaterials() {
+		return materials;
+	}
+
+	public void addMaterial(Material material) {
+		materials.add(material);
+	}
+
+	public Material getMaterial(String materialName) {
+		for (Material m : materials) {
+			if (m.getName().equals(materialName))
+				return m;
+		}
+		return null;
 	}
 }

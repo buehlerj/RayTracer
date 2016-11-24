@@ -16,14 +16,18 @@ public class Scene {
 		spheres = new ArrayList<Sphere>();
 	}
 
-	public boolean read(String inputFileName) {
+	public ArrayList<Model> read(String inputFileName) {
 		ArrayList<Model> models = new ArrayList<>();
 		File inputFile = new File(inputFileName);
+		String keyTerm;
 		try {
 			Scanner input = new Scanner(inputFile);
 			while (input.hasNext()) {
-				String keyTerm = input.next();
+				keyTerm = input.next();
 				switch (keyTerm) {
+				case "#": case "eye": case "look": case "up": case "d": case "bounds": case "res":
+					keyTerm = input.nextLine();
+					break;
 				case "ambient":
 					ambient = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
 					break;
@@ -36,44 +40,8 @@ public class Scene {
 					spheres.add(sphere);
 					break;
 				case "model":
-					Model m = new Model();
-					double a = input.nextDouble();
-					double b = input.nextDouble();
-					double c = input.nextDouble();
-					double d = input.nextDouble();
-					double e = input.nextDouble();
-					double f = input.nextDouble();
-					double g = input.nextDouble();
-					m.read(input.next());
-					models.add(m);
-					break;
-				}
-			}
-			input.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Problem Read file: " + inputFileName);
-			return false;
-		}
-		return true;
-	}
-
-	public ArrayList<Model> readModels(String inputFileName) {
-		ArrayList<Model> models = new ArrayList<>();
-		File inputFile = new File(inputFileName);
-		try {
-			Scanner input = new Scanner(inputFile);
-			while (input.hasNext()) {
-				String keyTerm = input.next();
-				switch (keyTerm) {
-				case "model":
-					Model m = new Model();
-					double a = input.nextDouble();
-					double b = input.nextDouble();
-					double c = input.nextDouble();
-					double d = input.nextDouble();
-					double e = input.nextDouble();
-					double f = input.nextDouble();
-					double g = input.nextDouble();
+					Model m = new Model(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(),
+							input.nextDouble(), input.nextDouble(), input.nextDouble());
 					m.read(input.next());
 					models.add(m);
 					break;

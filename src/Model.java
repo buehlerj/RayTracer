@@ -6,27 +6,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+import Jama.Matrix;
+
 public class Model {
 	String header = "";
 	String extension;
-	String material;
+	String materialName;
+	String materialLibraryFile;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	ArrayList<Face> faces = new ArrayList<Face>();
 	int numberOfVertices = 0;
 	int numberOfFaces = 0;
-	ArrayList<Material> materials = new ArrayList<>();
+	Matrix translation;
+	Matrix axisAngleRotation;
+
+	public Model() {
+	}
+
+	public Model(double x, double y, double z, double Rx, double Ry, double Rz, double Rw) {
+		translation = new Matrix(new double[][] { { x }, { y }, { z } });
+		axisAngleRotation = new Matrix(new double[][] { { Rx }, { Ry }, { Rz }, { Rw } });
+	}
 
 	public boolean read(String inputFileName) {
 		int extensionPeriodIndex = inputFileName.lastIndexOf('.') + 1;
 		extension = inputFileName.substring(extensionPeriodIndex, inputFileName.length());
 		File inputFile = new File(inputFileName);
-		switch(extension) {
-		case "ply":
-			boolean readingHeader = true;
-			int vertexCount = 0;
-			int faceCount = 0;
-			try {
-				Scanner input = new Scanner(inputFile);
+		try {
+			Scanner input = new Scanner(inputFile);
+			switch(extension) {
+			case "ply":
+				boolean readingHeader = true;
+				int vertexCount = 0;
+				int faceCount = 0;
 				while (input.hasNext()) {
 					if (readingHeader) {
 						String next = input.nextLine();
@@ -59,15 +71,8 @@ public class Model {
 					}
 				}
 				input.close();
-			} catch (FileNotFoundException e) {
-				System.err.println("Problem Read file: " + inputFileName);
-				return false;
-			}
-			return true;
-		case "obj":
-			String materialLibraryFile = "";
-			try {
-				Scanner input = new Scanner(inputFile);
+				return true;
+			case "obj":
 				while (input.hasNext()) {
 					String next = input.next();
 					switch(next) {
@@ -83,7 +88,7 @@ public class Model {
 						vertices.add(inputVertex);
 						break;
 					case "usemtl":
-						material = input.next();
+						materialName = input.next();
 						break;
 					case "f":
 						Face inputFace = new Face();
@@ -98,49 +103,61 @@ public class Model {
 					}
 				}
 				input.close();
-				if (!materialLibraryFile.isEmpty()) {
-					Material inputMaterial = null;
-					File inputMaterialFile = new File(materialLibraryFile);
-					Scanner materialInput = new Scanner(inputMaterialFile);
-					while (materialInput.hasNext()) {
-						String next = materialInput.next();
-						switch(next) {
-						case "#":
-							next = materialInput.nextLine();
-							break;
-						case "newmtl":
-							inputMaterial = new Material(materialInput.next(), this);
-							materials.add(inputMaterial);
-							break;
-						case "Ns":
-							inputMaterial.setNs(materialInput.nextDouble());
-							break;
-						case "Ka":
-							inputMaterial.setKa(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
-							break;
-						case "Kd":
-							inputMaterial.setKd(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
-							break;
-						case "Ks":
-							inputMaterial.setKs(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
-							break;
-						case "d":
-							inputMaterial.setD(materialInput.nextDouble());
-							break;
-						case "illum":
-							inputMaterial.setIllum(materialInput.nextDouble());
-							break;
-						}
-					}
-					materialInput.close();
-				}
-			} catch (FileNotFoundException e) {
-				System.err.println("Problem Read file: " + inputFileName);
-				return false;
+				return true;
 			}
-			return true;
+			input.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Problem Read file: " + inputFileName);
+			return false;
 		}
 		return false;
+	}
+
+	public ArrayList<Material> readMaterials() {
+		ArrayList<Material> materials = new ArrayList<>();
+		if (!materialLibraryFile.isEmpty()) {
+			Material inputMaterial = null;
+			File inputMaterialFile = new File(materialLibraryFile);
+			Scanner materialInput;
+			try {
+				materialInput = new Scanner(inputMaterialFile);
+				while (materialInput.hasNext()) {
+					String next = materialInput.next();
+					switch(next) {
+					case "#":
+						next = materialInput.nextLine();
+						break;
+					case "newmtl":
+						inputMaterial = new Material(materialInput.next(), this);
+						materials.add(inputMaterial);
+						break;
+					case "Ns":
+						inputMaterial.setNs(materialInput.nextDouble());
+						break;
+					case "Ka":
+						inputMaterial.setKa(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+						break;
+					case "Kd":
+						inputMaterial.setKd(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+						break;
+					case "Ks":
+						inputMaterial.setKs(materialInput.nextDouble(), materialInput.nextDouble(), materialInput.nextDouble());
+						break;
+					case "d":
+						inputMaterial.setD(materialInput.nextDouble());
+						break;
+					case "illum":
+						inputMaterial.setIllum(materialInput.nextDouble());
+						break;
+					}
+				}
+				materialInput.close();
+			} catch (FileNotFoundException e) {
+				System.err.println("Problem Read file: " + materialLibraryFile);
+				return null;
+			}
+		}
+		return materials;
 	}
 
 	@SuppressWarnings("resource")
@@ -200,8 +217,8 @@ public class Model {
 		System.out.println(numberOfVertices + " vertices, " + numberOfFaces + " polygons");
 		System.out.println("Mean Vertex = " + getAverageVertex().toStringVertex());
 		System.out.println("Bounding Box: " + df.format(minVertex.getX()) + " <= x <= " + df.format(maxVertex.getX())
-				+ ", " + df.format(minVertex.getY()) + " <= y <= " + df.format(maxVertex.getY()) + ", "
-				+ df.format(minVertex.getZ()) + " <= z <= " + df.format(maxVertex.getZ()));
+		+ ", " + df.format(minVertex.getY()) + " <= y <= " + df.format(maxVertex.getY()) + ", "
+		+ df.format(minVertex.getZ()) + " <= z <= " + df.format(maxVertex.getZ()));
 		System.out.println("Standard Deviations: x = " + df.format(standardDeviation.getX()) + ", y = "
 				+ df.format(standardDeviation.getY()) + ", z = " + df.format((standardDeviation.getZ())));
 	}
@@ -318,14 +335,6 @@ public class Model {
 		numberOfFaces = newNumberOfFaces;
 	}
 
-	public ArrayList<Material> getMaterials() {
-		return materials;
-	}
-
-	public void addMaterials(Material material) {
-		this.materials.add(material);
-	}
-
 	public void swapYZ(){
 		for (Vertex v : vertices) {
 			double y = v.getY();
@@ -333,5 +342,13 @@ public class Model {
 			v.setZ(y);
 			v.setY(z * -1);
 		}
+	}
+
+	public String getMaterialName() {
+		return materialName;
+	}
+
+	public void setMaterialName(String materialName) {
+		this.materialName = materialName;
 	}
 }
