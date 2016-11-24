@@ -50,7 +50,7 @@ public class RayTracer {
 			}
 		}
 
-//		ArrayList<Double> tValues = new ArrayList<Double>();
+		//		ArrayList<Double> tValues = new ArrayList<Double>();
 		double currentT;
 		Vertex aVertex; Vertex bVertex; Vertex cVertex;
 		double a1; double a2; double a3;
