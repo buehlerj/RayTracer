@@ -123,34 +123,17 @@ public class RayTracer {
 //					}
 //				}
 				
-				double r; double c; double v; double d; double csq; double disc;
-				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
+				double v; double d; double csq; double disc;
+				Matrix Tv;
 				for (Sphere s : getSpheres()) {
-					/*
-					r = s.getRadius();
-					c = rayOrigin.minus(s.getCoordinates()).normF();
-					// TODO: value of v is the distance of the origin of the ray
-					// to the point that is the closes to the center of the
-					// sphere
-					v = c;
-					d = Math.sqrt(Math.pow(r, 2) - Math.pow(c, 2) + Math.pow(v, 2));
-					if (Math.pow(d, 2) >= 0) {
-						double distance = rayOrigin.minus(rayOrigin.plus(rayDirection.times(v - d))).normF();
-						currentT = distance;
-					}
-					*/
-					r = s.getRadius();
-					Cv = s.getCoordinates();
-					Lv = rayDirection;
-					Uv = rayOrigin;
-					Tv = Cv.minus(Lv);
-					v = Utils.dotProduct(Cv, Lv);
+					Tv = s.getCoordinates().minus(rayOrigin);
+					v = Utils.dotProduct(Tv, rayDirection);
 					csq = Utils.dotProduct(Tv, Tv);
-					disc = Math.pow(r, 2) - (csq - Math.pow(v, 2));
+					disc = Math.pow(s.getRadius(), 2) - (csq - Math.pow(v, 2));
 					if (disc >= 0) {
 						d = Math.sqrt(disc);
 						t = v - d;
-						currentT = v - d;
+						currentT = t;
 					}
 				}
 
