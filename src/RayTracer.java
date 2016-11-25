@@ -9,6 +9,7 @@ public class RayTracer {
 	private ArrayList<Sphere> spheres;
 	private Ray[][] rays;
 	private Double[][] distances;
+	private Material[][] materialPixels;
 	private ArrayList<Material> materials;
 
 	public RayTracer() {
@@ -23,6 +24,7 @@ public class RayTracer {
 		boolean cameraRead = camera.read(inputFileName);
 		rays = new Ray[camera.getRes()[0]][camera.getRes()[1]];
 		distances = new Double[camera.getRes()[0]][camera.getRes()[1]];
+		materialPixels = new Material[camera.getRes()[0]][camera.getRes()[1]];
 		return cameraRead;
 	}
 
@@ -52,6 +54,7 @@ public class RayTracer {
 
 		//		ArrayList<Double> tValues = new ArrayList<Double>();
 		double currentT;
+		Material currentMaterial = null;
 		Vertex aVertex; Vertex bVertex; Vertex cVertex;
 		double a1; double a2; double a3;
 		double b1; double b2; double b3;
@@ -62,6 +65,7 @@ public class RayTracer {
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				currentT = -1;
+				currentMaterial = null;
 				rayOrigin = rays[i][j].getLocation();
 				rayDirection = rays[i][j].getDirection();
 				D = rayOrigin.minus(camera.getEye());
@@ -92,38 +96,71 @@ public class RayTracer {
 						gamma = x.get(1, 0);
 						t = x.get(2, 0);
 						if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-							if (currentT == -1)
+							if (currentT == -1 || t < currentT) {
 								currentT = t;
-							else if (t < currentT)
-								currentT = t;
+								currentMaterial = getMaterial(m.getMaterialName());
+							}
 						}
 					}
 				}
 
 				// Ray Trace on all Sphere Models
+//				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
+//				double v; double bsq; double disc;
+//				for (Sphere s : getSpheres()) {
+//					Cv = s.getCoordinates();
+//					Lv = rayOrigin;
+//					Uv = rayDirection;
+//					Tv = Cv.minus(Lv);
+//					v = Utils.dotProduct(Tv, Uv);
+//					bsq = Utils.dotProduct(Tv, Tv);
+//					disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
+//					if (disc > 0) {
+//						if (currentT == -1)
+//							currentT = disc;
+//						else if (disc < currentT)
+//							currentT = disc;
+//					}
+//				}
+				
+				double r; double c; double v; double d; double csq; double disc;
 				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
-				double v; double bsq; double disc;
 				for (Sphere s : getSpheres()) {
+					/*
+					r = s.getRadius();
+					c = rayOrigin.minus(s.getCoordinates()).normF();
+					// TODO: value of v is the distance of the origin of the ray
+					// to the point that is the closes to the center of the
+					// sphere
+					v = c;
+					d = Math.sqrt(Math.pow(r, 2) - Math.pow(c, 2) + Math.pow(v, 2));
+					if (Math.pow(d, 2) >= 0) {
+						double distance = rayOrigin.minus(rayOrigin.plus(rayDirection.times(v - d))).normF();
+						currentT = distance;
+					}
+					*/
+					r = s.getRadius();
 					Cv = s.getCoordinates();
-					Lv = rayOrigin;
-					Uv = rayDirection;
+					Lv = rayDirection;
+					Uv = rayOrigin;
 					Tv = Cv.minus(Lv);
-					v = Utils.dotProduct(Tv, Uv);
-					bsq = Utils.dotProduct(Tv, Tv);
-					disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
-					if (disc > 0) {
-						if (currentT == -1)
-							currentT = disc;
-						else if (disc < currentT)
-							currentT = disc;
+					v = Utils.dotProduct(Cv, Lv);
+					csq = Utils.dotProduct(Tv, Tv);
+					disc = Math.pow(r, 2) - (csq - Math.pow(v, 2));
+					if (disc >= 0) {
+						d = Math.sqrt(disc);
+						t = v - d;
+						currentT = v - d;
 					}
 				}
 
 				// Compare all distance values
 				if (currentT == -1) {
 					distances[i][j] = null;
+					materialPixels[i][j] = null;
 				} else {
 					distances[i][j] = currentT;
+					materialPixels[i][j] = currentMaterial;
 				}
 			}
 		}
@@ -171,9 +208,9 @@ public class RayTracer {
 
 	public Ray rayPt(int i, int j) {
 		Matrix point = pixelPt(i, j);
-		//		Matrix ray = point.minus(camera.getCameraV());
-		//		ray = ray.timesEquals(1 / ray.normF());
-		return new Ray(point, camera.getEye().plus(point));
+		Matrix ray = point.minus(camera.getEye());
+		ray.timesEquals(1 / ray.normF());
+		return new Ray(point, ray);
 	}
 
 	public double getMin(Double[][] list) {

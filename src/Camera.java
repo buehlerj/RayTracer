@@ -9,10 +9,10 @@ public class Camera {
 	private Matrix look;
 	private Matrix up;
 	private double d;
-	private int boundL;
-	private int boundB;
-	private int boundR;
-	private int boundT;
+	private double boundL;
+	private double boundB;
+	private double boundR;
+	private double boundT;
 	private int resx;
 	private int resy;
 	private Matrix cameraW;
@@ -36,22 +36,22 @@ public class Camera {
 				String keyTerm = input.next();
 				switch (keyTerm) {
 				case "eye":
-					eye = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
+					eye = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
 					break;
 				case "look":
-					look = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
+					look = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
 					break;
 				case "up":
-					up = new Matrix(new double[][] { { input.nextInt() }, { input.nextInt() }, { input.nextInt() } });
+					up = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
 					break;
 				case "d":
-					d = input.nextInt() * -1;
+					d = input.nextDouble() * -1;
 					break;
 				case "bounds":
-					boundL = input.nextInt();
-					boundB = input.nextInt();
-					boundR = input.nextInt();
-					boundT = input.nextInt();
+					boundL = input.nextDouble();
+					boundB = input.nextDouble();
+					boundR = input.nextDouble();
+					boundT = input.nextDouble();
 					break;
 				case "res":
 					resx = input.nextInt();
@@ -130,8 +130,8 @@ public class Camera {
 		this.d = d;
 	}
 
-	public int[] getBounds() {
-		return new int[] { boundL, boundB, boundR, boundT };
+	public double[] getBounds() {
+		return new double[] { boundL, boundB, boundR, boundT };
 	}
 
 	public int[] getRes() {
