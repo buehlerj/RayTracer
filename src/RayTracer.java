@@ -55,9 +55,21 @@ public class RayTracer {
 			}
 		}
 
+		Matrix currentPt = null;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-				rayModelTest(rays[i][j], i, j);
+				for (Sphere s : spheres) {
+					currentPt = rayModelTest(rays[i][j], null, s, i, j);					
+				}
+				for (Model m : models) {
+					currentPt = rayModelTest(rays[i][j], m, null, i, j);
+				}
+
+				if (currentPt == null) {
+
+				} else {
+
+				}
 			}
 		}
 
@@ -83,28 +95,28 @@ public class RayTracer {
 		return photo;
 	}
 
-	public Matrix rayModelTest(Ray ray, int i, int j) {
+	public Matrix rayModelTest(Ray ray, Model model, Sphere sphere, int i, int j) {
+		double t;
 		Matrix pt = null;
-		Matrix D; Matrix M; Matrix y; Matrix x;
-		double beta; double gamma; double t;
-		double currentT = -1;
-		Material currentMaterial = null;
-		Vertex aVertex; Vertex bVertex; Vertex cVertex;
-		double a1; double a2; double a3;
-		double b1; double b2; double b3;
-		double c1; double c2; double c3;
-		double d1; double d2; double d3;
-		D = ray.getLocation().minus(camera.getEye());
-		D = D.timesEquals(1 / D.normF());
-		c1 = D.get(0, 0);
-		c2 = D.get(1, 0);
-		c3 = D.get(2, 0);
-		// Ray Trace on all Polygonal Models
-		for (Model m : models) {
-			for (Face f : m.getFaces()) {
-				aVertex = m.getVertices().get(f.getVertexIndices().get(0));
-				bVertex = m.getVertices().get(f.getVertexIndices().get(1));
-				cVertex = m.getVertices().get(f.getVertexIndices().get(2));
+
+		if (model != null) {
+			Matrix D; Matrix M; Matrix y; Matrix x;
+			double beta; double gamma;
+			Vertex aVertex; Vertex bVertex; Vertex cVertex;
+			double a1; double a2; double a3;
+			double b1; double b2; double b3;
+			double c1; double c2; double c3;
+			double d1; double d2; double d3;
+			D = ray.getLocation().minus(camera.getEye());
+			D = D.timesEquals(1 / D.normF());
+			c1 = D.get(0, 0);
+			c2 = D.get(1, 0);
+			c3 = D.get(2, 0);
+			// Ray Trace on all Polygonal Models
+			for (Face f : model.getFaces()) {
+				aVertex = model.getVertices().get(f.getVertexIndices().get(0));
+				bVertex = model.getVertices().get(f.getVertexIndices().get(1));
+				cVertex = model.getVertices().get(f.getVertexIndices().get(2));
 				a1 = aVertex.getX() - bVertex.getX();
 				a2 = aVertex.getY() - bVertex.getY();
 				a3 = aVertex.getZ() - bVertex.getZ();
@@ -122,38 +134,30 @@ public class RayTracer {
 				gamma = x.get(1, 0);
 				t = x.get(2, 0);
 				if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-					if (currentT == -1 || t < currentT) {
-						currentT = t;
-						currentMaterial = getMaterial(m.getMaterialName());
+					if (distances[i][j] == null || t < distances[i][j]) {
+						distances[i][j] = t;
+						materialPixels[i][j] = getMaterial(model.getMaterialName());
 					}
 				}
 			}
 		}
 
 		// Ray Trace on all Sphere Models
-		double v; double d; double csq; double disc;
-		Matrix Tv;
-		for (Sphere s : getSpheres()) {
-			Tv = s.getCoordinates().minus(ray.getLocation());
+		if (sphere != null) {
+			double v; double d; double csq; double disc;
+			Matrix Tv;
+			Tv = sphere.getCoordinates().minus(ray.getLocation());
 			v = Utils.dotProduct(Tv, ray.getDirection());
 			csq = Utils.dotProduct(Tv, Tv);
-			disc = Math.pow(s.getRadius(), 2) - (csq - Math.pow(v, 2));
+			disc = Math.pow(sphere.getRadius(), 2) - (csq - Math.pow(v, 2));
 			if (disc >= 0) {
 				d = Math.sqrt(disc);
 				t = v - d;
-				currentT = t;
+				distances[i][j] = t;
 				pt = ray.getLocation().plus(ray.getDirection().times(t));
 			}
 		}
 
-		// Compare all distance values
-		if (currentT == -1) {
-			distances[i][j] = null;
-			materialPixels[i][j] = null;
-		} else {
-			distances[i][j] = currentT;
-			materialPixels[i][j] = currentMaterial;
-		}
 		return pt;
 	}
 
