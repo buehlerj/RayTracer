@@ -4,6 +4,11 @@ public class Ray {
 	Matrix location;
 	Matrix direction;
 
+	Ray() {
+		location = new Matrix(1, 3);
+		direction = new Matrix(1, 3);
+	}
+
 	Ray(Matrix location, Matrix direction) {
 		this.location = location;
 		this.direction = direction;

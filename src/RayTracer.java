@@ -55,6 +55,8 @@ public class RayTracer {
 		//		ArrayList<Double> tValues = new ArrayList<Double>();
 		double currentT;
 		Material currentMaterial = null;
+		// TODO: set the next ray that it will recurse over.
+//		Ray nextRay;
 		Vertex aVertex; Vertex bVertex; Vertex cVertex;
 		double a1; double a2; double a3;
 		double b1; double b2; double b3;
@@ -64,6 +66,7 @@ public class RayTracer {
 		double beta; double gamma; double t;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
+//				nextRay = new Ray();
 				currentT = -1;
 				currentMaterial = null;
 				rayOrigin = rays[i][j].getLocation();
@@ -105,24 +108,6 @@ public class RayTracer {
 				}
 
 				// Ray Trace on all Sphere Models
-//				Matrix Cv; Matrix Lv; Matrix Uv; Matrix Tv;
-//				double v; double bsq; double disc;
-//				for (Sphere s : getSpheres()) {
-//					Cv = s.getCoordinates();
-//					Lv = rayOrigin;
-//					Uv = rayDirection;
-//					Tv = Cv.minus(Lv);
-//					v = Utils.dotProduct(Tv, Uv);
-//					bsq = Utils.dotProduct(Tv, Tv);
-//					disc = Math.pow(s.getRadius(), 2) - (bsq - Math.pow(v, 2));
-//					if (disc > 0) {
-//						if (currentT == -1)
-//							currentT = disc;
-//						else if (disc < currentT)
-//							currentT = disc;
-//					}
-//				}
-				
 				double v; double d; double csq; double disc;
 				Matrix Tv;
 				for (Sphere s : getSpheres()) {
@@ -134,6 +119,7 @@ public class RayTracer {
 						d = Math.sqrt(disc);
 						t = v - d;
 						currentT = t;
+//						nextRay.setLocation(rayOrigin.plus(rayDirection.times(t)));
 					}
 				}
 
