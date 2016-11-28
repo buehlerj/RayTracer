@@ -1,3 +1,4 @@
+import Jama.Matrix;
 
 public class Pixel {
 	private int r = 0;
@@ -7,6 +8,18 @@ public class Pixel {
 	private int index;
 
 	Pixel() {
+	}
+
+	Pixel(Matrix color) {
+		if (color.get(0, 0) > 1) {
+			this.r = (int) color.get(0, 0);
+			this.g = (int) color.get(1, 0);
+			this.b = (int) color.get(2, 0);
+		} else {
+			this.r = (int) color.get(0, 0) * 256;
+			this.g= (int) color.get(1, 0) * 256;
+			this.b= (int) color.get(2, 0) * 256;
+		}
 	}
 
 	Pixel(int r, int g, int b) {

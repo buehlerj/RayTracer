@@ -8,11 +8,11 @@ public class RayTracer {
 	private ArrayList<Model> models;
 	private ArrayList<Sphere> spheres;
 	private Ray[][] rays;
-	private Ray[][] raysRecursed;
 	private Double[][] distances;
 	private Material[][] materialPixels;
 	private ArrayList<Material> materials;
 	private final int recursionLevel = 1;
+	private final int PhongConstant = 16;
 
 	public RayTracer() {
 		camera = new Camera();
@@ -25,7 +25,6 @@ public class RayTracer {
 	public boolean setupCamera(String inputFileName) {
 		boolean cameraRead = camera.read(inputFileName);
 		rays = new Ray[camera.getRes()[0]][camera.getRes()[1]];
-		raysRecursed = new Ray[camera.getRes()[0]][camera.getRes()[1]];
 		distances = new Double[camera.getRes()[0]][camera.getRes()[1]];
 		materialPixels = new Material[camera.getRes()[0]][camera.getRes()[1]];
 		return cameraRead;
@@ -55,24 +54,26 @@ public class RayTracer {
 			}
 		}
 
-		Matrix currentPt = null;
+		Matrix currentColor;
+		Pixel currentPixel;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
 				for (Sphere s : spheres) {
-					currentPt = rayModelTest(rays[i][j], null, s, i, j);					
+					currentColor = raySphereRGB(rays[i][j], s, i, j);
+					if (currentColor != null) {
+						System.out.println(Utils.MatrixToStringOneLine(currentColor));
+						currentPixel = new Pixel(currentColor);
+						photo.addToPixels(i, j, currentPixel);
+					} else {
+						photo.addToPixels(i, j, new Pixel());
+					}
 				}
-				for (Model m : models) {
-					currentPt = rayModelTest(rays[i][j], m, null, i, j);
-				}
-
-				if (currentPt == null) {
-
-				} else {
-
-				}
+				// TODO: Incorporate Models too
 			}
 		}
 
+		// Pixels by Distance
+		/*
 		double min = getMin(distances);
 		double max = getMax(distances);
 		Double distance;
@@ -92,10 +93,37 @@ public class RayTracer {
 				}
 			}
 		}
+		*/
 		return photo;
 	}
 
-	public Matrix rayModelTest(Ray ray, Model model, Sphere sphere, int i, int j) {
+	public Matrix raySphereRGB(Ray r, Sphere s, int i, int j) {
+		Matrix currentPt = raySphereTest(rays[i][j], s, i, j);
+		Matrix snrm; Matrix color;
+		if (currentPt != null) {
+			snrm = currentPt.minus(s.getCoordinates());
+			snrm.timesEquals(1 / snrm.normF());
+			// TODO: Get correct currentMaterial for this sphere
+			Material currentMaterial = new Material("", null);
+			color = Utils.pairwiseProduct(scene.getAmbient(), currentMaterial.getKa());
+			for (Light l : scene.getLights()) {
+				Matrix ptL = l.getCoordinates();
+				Matrix emL = l.getColor();
+				Matrix toL = Utils.pairwiseMinus(ptL, currentPt);
+				toL.timesEquals(1 / toL.normF());
+				if (Utils.dotProduct(snrm, toL) > 0.0) {
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKd(), emL.times(Utils.dotProduct(snrm,  toL))));
+					Matrix toC = rays[i][j].getLocation().minus(currentPt);
+					Matrix spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
+					return color;
+				}
+			}
+		}
+		return null;
+	}
+
+	public Matrix rayModelTest(Ray ray, Model model, int i, int j) {
 		double t;
 		Matrix pt = null;
 
@@ -141,6 +169,13 @@ public class RayTracer {
 				}
 			}
 		}
+
+		return pt;
+	}
+
+	public Matrix raySphereTest(Ray ray, Sphere sphere, int i, int j) {
+		double t;
+		Matrix pt = null;
 
 		// Ray Trace on all Sphere Models
 		if (sphere != null) {

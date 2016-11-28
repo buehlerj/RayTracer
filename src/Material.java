@@ -4,9 +4,9 @@ public class Material {
 	String name = "";
 	Model model;
 	double Ns = 0;
-	Matrix Ka = new Matrix(3, 0);
-	Matrix Kd = new Matrix(3, 0);
-	Matrix Ks = new Matrix(3, 0);
+	Matrix Ka = new Matrix(new double[][] { {.9}, {.9}, {.9} });
+	Matrix Kd = new Matrix(new double[][] { {.9}, {.9}, {.9} });
+	Matrix Ks = new Matrix(new double[][] { {.9}, {.9}, {.9} });
 	double d = 0;
 	double illum;
 

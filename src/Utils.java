@@ -29,4 +29,18 @@ public class Utils {
 	public static double dotProduct(Matrix m1, Matrix m2) {
 		return m1.get(0, 0) * m2.get(0, 0) + m1.get(1, 0) * m2.get(1, 0) + m1.get(2, 0) * m2.get(2, 0);
 	}
+
+	public static Matrix pairwiseProduct(Matrix m1, Matrix m2) {
+		double a = m1.get(0, 0) * m2.get(0, 0);
+		double b = m1.get(1, 0) * m2.get(1, 0);
+		double c = m1.get(2, 0) * m2.get(2, 0);
+		return new Matrix(new double[][] { {a}, {b}, {c} });
+	}
+
+	public static Matrix pairwiseMinus(Matrix m1, Matrix m2) {
+		double a = m1.get(0, 0) - m2.get(0, 0);
+		double b = m1.get(1, 0) - m2.get(1, 0);
+		double c = m1.get(2, 0) - m2.get(2, 0);
+		return new Matrix(new double[][] { {a}, {b}, {c} });
+	}
 }
