@@ -8,9 +8,11 @@ public class RayTracer {
 	private ArrayList<Model> models;
 	private ArrayList<Sphere> spheres;
 	private Ray[][] rays;
+	private Ray[][] raysRecursed;
 	private Double[][] distances;
 	private Material[][] materialPixels;
 	private ArrayList<Material> materials;
+	private final int recursionLevel = 1;
 
 	public RayTracer() {
 		camera = new Camera();
@@ -23,6 +25,7 @@ public class RayTracer {
 	public boolean setupCamera(String inputFileName) {
 		boolean cameraRead = camera.read(inputFileName);
 		rays = new Ray[camera.getRes()[0]][camera.getRes()[1]];
+		raysRecursed = new Ray[camera.getRes()[0]][camera.getRes()[1]];
 		distances = new Double[camera.getRes()[0]][camera.getRes()[1]];
 		materialPixels = new Material[camera.getRes()[0]][camera.getRes()[1]];
 		return cameraRead;
@@ -52,85 +55,9 @@ public class RayTracer {
 			}
 		}
 
-		//		ArrayList<Double> tValues = new ArrayList<Double>();
-		double currentT;
-		Material currentMaterial = null;
-		// TODO: set the next ray that it will recurse over.
-//		Ray nextRay;
-		Vertex aVertex; Vertex bVertex; Vertex cVertex;
-		double a1; double a2; double a3;
-		double b1; double b2; double b3;
-		double c1; double c2; double c3;
-		double d1; double d2; double d3;
-		Matrix rayOrigin; Matrix rayDirection; Matrix D; Matrix M; Matrix y; Matrix x;
-		double beta; double gamma; double t;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-//				nextRay = new Ray();
-				currentT = -1;
-				currentMaterial = null;
-				rayOrigin = rays[i][j].getLocation();
-				rayDirection = rays[i][j].getDirection();
-				D = rayOrigin.minus(camera.getEye());
-				D = D.timesEquals(1 / D.normF());
-				c1 = D.get(0, 0);
-				c2 = D.get(1, 0);
-				c3 = D.get(2, 0);
-				// Ray Trace on all Polygonal Models
-				for (Model m : models) {
-					for (Face f : m.getFaces()) {
-						aVertex = m.getVertices().get(f.getVertexIndices().get(0));
-						bVertex = m.getVertices().get(f.getVertexIndices().get(1));
-						cVertex = m.getVertices().get(f.getVertexIndices().get(2));
-						a1 = aVertex.getX() - bVertex.getX();
-						a2 = aVertex.getY() - bVertex.getY();
-						a3 = aVertex.getZ() - bVertex.getZ();
-						b1 = aVertex.getX() - cVertex.getX();
-						b2 = aVertex.getY() - cVertex.getY();
-						b3 = aVertex.getZ() - cVertex.getZ();
-						d1 = aVertex.getX() - rayOrigin.get(0, 0);
-						d2 = aVertex.getY() - rayOrigin.get(1, 0);
-						d3 = aVertex.getZ() - rayOrigin.get(2, 0);
-						M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
-						y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
-						x = M.solve(y);
-
-						beta = x.get(0, 0);
-						gamma = x.get(1, 0);
-						t = x.get(2, 0);
-						if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
-							if (currentT == -1 || t < currentT) {
-								currentT = t;
-								currentMaterial = getMaterial(m.getMaterialName());
-							}
-						}
-					}
-				}
-
-				// Ray Trace on all Sphere Models
-				double v; double d; double csq; double disc;
-				Matrix Tv;
-				for (Sphere s : getSpheres()) {
-					Tv = s.getCoordinates().minus(rayOrigin);
-					v = Utils.dotProduct(Tv, rayDirection);
-					csq = Utils.dotProduct(Tv, Tv);
-					disc = Math.pow(s.getRadius(), 2) - (csq - Math.pow(v, 2));
-					if (disc >= 0) {
-						d = Math.sqrt(disc);
-						t = v - d;
-						currentT = t;
-//						nextRay.setLocation(rayOrigin.plus(rayDirection.times(t)));
-					}
-				}
-
-				// Compare all distance values
-				if (currentT == -1) {
-					distances[i][j] = null;
-					materialPixels[i][j] = null;
-				} else {
-					distances[i][j] = currentT;
-					materialPixels[i][j] = currentMaterial;
-				}
+				rayModelTest(rays[i][j], i, j);
 			}
 		}
 
@@ -154,6 +81,80 @@ public class RayTracer {
 			}
 		}
 		return photo;
+	}
+
+	public Matrix rayModelTest(Ray ray, int i, int j) {
+		Matrix pt = null;
+		Matrix D; Matrix M; Matrix y; Matrix x;
+		double beta; double gamma; double t;
+		double currentT = -1;
+		Material currentMaterial = null;
+		Vertex aVertex; Vertex bVertex; Vertex cVertex;
+		double a1; double a2; double a3;
+		double b1; double b2; double b3;
+		double c1; double c2; double c3;
+		double d1; double d2; double d3;
+		D = ray.getLocation().minus(camera.getEye());
+		D = D.timesEquals(1 / D.normF());
+		c1 = D.get(0, 0);
+		c2 = D.get(1, 0);
+		c3 = D.get(2, 0);
+		// Ray Trace on all Polygonal Models
+		for (Model m : models) {
+			for (Face f : m.getFaces()) {
+				aVertex = m.getVertices().get(f.getVertexIndices().get(0));
+				bVertex = m.getVertices().get(f.getVertexIndices().get(1));
+				cVertex = m.getVertices().get(f.getVertexIndices().get(2));
+				a1 = aVertex.getX() - bVertex.getX();
+				a2 = aVertex.getY() - bVertex.getY();
+				a3 = aVertex.getZ() - bVertex.getZ();
+				b1 = aVertex.getX() - cVertex.getX();
+				b2 = aVertex.getY() - cVertex.getY();
+				b3 = aVertex.getZ() - cVertex.getZ();
+				d1 = aVertex.getX() - ray.getLocation().get(0, 0);
+				d2 = aVertex.getY() - ray.getLocation().get(1, 0);
+				d3 = aVertex.getZ() - ray.getLocation().get(2, 0);
+				M = new Matrix(new double[][] { { a1, b1, c1 }, { a2, b2, c2 }, { a3, b3, c3 } });
+				y = new Matrix(new double[][] { { d1 }, { d2 }, { d3 } });
+				x = M.solve(y);
+
+				beta = x.get(0, 0);
+				gamma = x.get(1, 0);
+				t = x.get(2, 0);
+				if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
+					if (currentT == -1 || t < currentT) {
+						currentT = t;
+						currentMaterial = getMaterial(m.getMaterialName());
+					}
+				}
+			}
+		}
+
+		// Ray Trace on all Sphere Models
+		double v; double d; double csq; double disc;
+		Matrix Tv;
+		for (Sphere s : getSpheres()) {
+			Tv = s.getCoordinates().minus(ray.getLocation());
+			v = Utils.dotProduct(Tv, ray.getDirection());
+			csq = Utils.dotProduct(Tv, Tv);
+			disc = Math.pow(s.getRadius(), 2) - (csq - Math.pow(v, 2));
+			if (disc >= 0) {
+				d = Math.sqrt(disc);
+				t = v - d;
+				currentT = t;
+				pt = ray.getLocation().plus(ray.getDirection().times(t));
+			}
+		}
+
+		// Compare all distance values
+		if (currentT == -1) {
+			distances[i][j] = null;
+			materialPixels[i][j] = null;
+		} else {
+			distances[i][j] = currentT;
+			materialPixels[i][j] = currentMaterial;
+		}
+		return pt;
 	}
 
 	public Picture captureLightedPicture() {
@@ -253,6 +254,10 @@ public class RayTracer {
 				return m;
 		}
 		return null;
+	}
+
+	public int getRecursionLevel() {
+		return recursionLevel;
 	}
 
 	public String toString() {
