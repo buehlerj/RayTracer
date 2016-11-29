@@ -365,4 +365,13 @@ public class Model {
 	public void setMaterial(Material material) {
 		this.material = material;
 	}
+
+	public void rotateModel() {
+		for (Vertex v : vertices) {
+			double y = v.getY();
+			double z = v.getZ();
+			v.setY(z * -1);
+			v.setZ(y);
+		}
+	}
 }

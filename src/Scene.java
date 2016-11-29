@@ -54,6 +54,7 @@ public class Scene {
 					Model m = new Model(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(),
 							input.nextDouble(), input.nextDouble(), input.nextDouble());
 					m.read(input.next());
+					m.rotateModel();
 					models.add(m);
 					break;
 				default: 
