@@ -4,9 +4,13 @@ public class Ray {
 	Matrix location;
 	Matrix direction;
 
-	Double bestT = null;
+	Double bestTSphere = null;
 	Sphere bestSphere = null;
-	Matrix bestPt = null;
+	Matrix bestPtSphere = null;
+
+	Double bestTModel = null;
+	Sphere bestModel = null;
+	Matrix bestPtModel = null;
 
 	Ray() {
 		location = new Matrix(1, 3);
@@ -34,12 +38,12 @@ public class Ray {
 		this.direction = direction;
 	}
 
-	public Double getBestT() {
-		return bestT;
+	public Double getBestTSphere() {
+		return bestTSphere;
 	}
 
-	public void setBestT(Double bestT) {
-		this.bestT = bestT;
+	public void setBestTSphere(Double bestT) {
+		this.bestTSphere = bestT;
 	}
 
 	public Sphere getBestSphere() {
@@ -50,12 +54,36 @@ public class Ray {
 		this.bestSphere = bestSphere;
 	}
 
-	public Matrix getBestPt() {
-		return bestPt;
+	public Matrix getBestPtSphere() {
+		return bestPtSphere;
 	}
 
-	public void setBestPt(Matrix bestPt) {
-		this.bestPt = bestPt;
+	public void setBestPtSphere(Matrix bestPt) {
+		this.bestPtSphere = bestPt;
+	}
+
+	public Double getBestTModel() {
+		return bestTModel;
+	}
+
+	public void setBestTModel(Double bestTModel) {
+		this.bestTModel = bestTModel;
+	}
+
+	public Sphere getBestModel() {
+		return bestModel;
+	}
+
+	public void setBestModel(Sphere bestModel) {
+		this.bestModel = bestModel;
+	}
+
+	public Matrix getBestPtModel() {
+		return bestPtModel;
+	}
+
+	public void setBestPtModel(Matrix bestPtModel) {
+		this.bestPtModel = bestPtModel;
 	}
 
 	public String toString() {

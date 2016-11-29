@@ -8,13 +8,13 @@ public class Sphere {
 	Matrix color;
 	Material material;
 
-	public Sphere(double x, double y, double z, double radius, double red, double green, double blue, Matrix ambient) {
+	public Sphere(double x, double y, double z, double radius, double red, double green, double blue) {
 		this.coordinates = new Matrix(new double[][] { { x }, { y }, { z } });
 		this.radius = radius;
 		this.color = new Matrix(new double[][] { { red }, { green }, { blue } });
 		index = counter;
 		counter++;
-		material = new Material("Sphere " + Integer.toString(index), ambient);
+		material = new Material("Sphere " + Integer.toString(index), color);
 	}
 
 	public Matrix getCoordinates() {

@@ -25,15 +25,27 @@ public class Pixel {
 	}
 
 	Pixel(int r, int g, int b) {
+		if (r > 1) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
+		} else {
+			this.r = r * 255;
+			this.g = g * 255;
+			this.b = b * 255;
+		}
 	}
 
 	Pixel(double r, double g, double b) {
-		this.r = (int) Math.round(r);
-		this.g = (int) Math.round(g);
-		this.b = (int) Math.round(b);
+		if (r > 1) {
+			this.r = (int) Math.round(r);
+			this.g = (int) Math.round(g);
+			this.b = (int) Math.round(b);
+		} else {
+			this.r = (int) Math.round(r * 255);
+			this.g = (int) Math.round(g * 255);
+			this.b = (int) Math.round(b * 255);
+		}
 	}
 
 	public String getType() {
