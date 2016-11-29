@@ -61,7 +61,6 @@ public class RayTracer {
 				for (Sphere s : spheres) {
 					currentColor = raySphereRGB(rays[i][j], s, i, j);
 					if (currentColor != null) {
-						System.out.println(Utils.MatrixToStringOneLine(currentColor));
 						currentPixel = new Pixel(currentColor);
 						photo.addToPixels(i, j, currentPixel);
 					} else {
@@ -93,7 +92,7 @@ public class RayTracer {
 				}
 			}
 		}
-		*/
+		 */
 		return photo;
 	}
 
@@ -103,8 +102,7 @@ public class RayTracer {
 		if (currentPt != null) {
 			snrm = currentPt.minus(s.getCoordinates());
 			snrm.timesEquals(1 / snrm.normF());
-			// TODO: Get correct currentMaterial for this sphere
-			Material currentMaterial = new Material("", null);
+			Material currentMaterial = s.getMaterial();
 			color = Utils.pairwiseProduct(scene.getAmbient(), currentMaterial.getKa());
 			for (Light l : scene.getLights()) {
 				Matrix ptL = l.getCoordinates();
@@ -114,11 +112,12 @@ public class RayTracer {
 				if (Utils.dotProduct(snrm, toL) > 0.0) {
 					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKd(), emL.times(Utils.dotProduct(snrm,  toL))));
 					Matrix toC = rays[i][j].getLocation().minus(currentPt);
+					toC.timesEquals(1 / toC.normF());
 					Matrix spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
 					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
-					return color;
 				}
 			}
+			return color;
 		}
 		return null;
 	}

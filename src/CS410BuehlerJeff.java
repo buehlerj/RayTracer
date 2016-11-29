@@ -21,6 +21,7 @@ public class CS410BuehlerJeff {
 		}
 
 		Picture image = rayTracer.capturePicture();
+		System.out.println("Image Read, writing file.");
 		image.write(args[args.length - 1], "");
 
 		System.out.println("\n\n\n\n----------------- STATS -----------------\n");

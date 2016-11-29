@@ -78,7 +78,7 @@ public class Scene {
 				keyTerm = input.next();
 				switch(keyTerm) {
 				case "sphere":
-					Sphere sphere = new Sphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
+					Sphere sphere = new Sphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), ambient);
 					spheres.add(sphere);
 					break;
 				default:

@@ -10,6 +10,13 @@ public class Material {
 	double d = 0;
 	double illum;
 
+	Material(String name, Matrix ambient) {
+		this.name = name;
+		this.Ka = ambient;
+		this.Kd = ambient;
+		this.Ks = ambient;
+	}
+
 	Material(String name, Model model) {
 		this.name = name;
 		this.model = model;

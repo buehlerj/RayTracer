@@ -12,6 +12,7 @@ public class Model {
 	String header = "";
 	String extension;
 	String materialName;
+	Material material;
 	String materialLibraryFile;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	ArrayList<Face> faces = new ArrayList<Face>();
@@ -155,6 +156,11 @@ public class Model {
 			} catch (FileNotFoundException e) {
 				System.err.println("Problem Read file: " + materialLibraryFile);
 				return null;
+			}
+		}
+		for (Material m : materials) {
+			if (m.getName().equals(materialName)) {
+				material = m;
 			}
 		}
 		return materials;
@@ -350,5 +356,13 @@ public class Model {
 
 	public void setMaterialName(String materialName) {
 		this.materialName = materialName;
+	}
+
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 }

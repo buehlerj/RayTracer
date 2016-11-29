@@ -1,14 +1,20 @@
 import Jama.Matrix;
 
 public class Sphere {
+	public static int counter = 0;
+	int index;
 	Matrix coordinates;
 	double radius;
 	Matrix color;
+	Material material;
 
-	public Sphere(double x, double y, double z, double radius, double red, double green, double blue) {
+	public Sphere(double x, double y, double z, double radius, double red, double green, double blue, Matrix ambient) {
 		this.coordinates = new Matrix(new double[][] { { x }, { y }, { z } });
 		this.radius = radius;
 		this.color = new Matrix(new double[][] { { red }, { green }, { blue } });
+		index = counter;
+		counter++;
+		material = new Material("Sphere " + Integer.toString(index), ambient);
 	}
 
 	public Matrix getCoordinates() {
@@ -57,6 +63,14 @@ public class Sphere {
 
 	public void setColor(Matrix color) {
 		this.color = color;
+	}
+
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 
 	public String toString() {

@@ -16,9 +16,9 @@ public class Pixel {
 			this.g = (int) color.get(1, 0);
 			this.b = (int) color.get(2, 0);
 		} else {
-			this.r = (int) color.get(0, 0) * 256;
-			this.g= (int) color.get(1, 0) * 256;
-			this.b= (int) color.get(2, 0) * 256;
+			this.r = (int) (color.get(0, 0) * 255);
+			this.g = (int) (color.get(1, 0) * 255);
+			this.b = (int) (color.get(2, 0) * 255);
 		}
 	}
 
