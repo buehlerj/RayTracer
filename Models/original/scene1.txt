@@ -3,7 +3,7 @@ look 0 0 0
 up 0 0 1 
 d 2 
 bounds -1 -1 1 1 
-res 100 100 
+res 256 256 
 ambient 0.5 0.5 0.5 
 light 0 4 4 1 1.00 1.00 1.00 
 light 4 0 4 1 1.00 1.00 1.00 
