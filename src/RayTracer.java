@@ -13,6 +13,10 @@ public class RayTracer {
 	private ArrayList<Material> materials;
 	private final int recursionLevel = 1;
 	private final int PhongConstant = 16;
+	private final Matrix Kr = new Matrix(new double[][] { {.9}, {.9}, {.9} });
+
+	public Sphere bestSphere;
+	public Matrix bestPt;
 
 	public RayTracer() {
 		camera = new Camera();
@@ -54,19 +58,20 @@ public class RayTracer {
 			}
 		}
 
-		Matrix currentColor;
-		Pixel currentPixel;
+		Matrix rgb;
+		Matrix currentPixelValues;
+		Ray ray;
 		for (int j = 0; j < camera.getRes()[1]; j++) {
 			for (int i = 0; i < camera.getRes()[0]; i++) {
-				for (Sphere s : spheres) {
-					currentColor = raySphereRGB(rays[i][j], s, i, j);
-					if (currentColor != null) {
-						currentPixel = new Pixel(currentColor);
-						photo.addToPixels(i, j, currentPixel);
-					} else {
-						photo.addToPixels(i, j, new Pixel());
-					}
-				}
+				ray = rays[i][j];
+				rgb = new Matrix(3, 1);
+				currentPixelValues = rayTrace(i, j, ray, rgb, scene.getAmbient(), recursionLevel);
+				photo.addToPixels(i, j, new Pixel(currentPixelValues));
+
+//				for (Sphere s : spheres) {
+//					currentColor = raySphereRGB(currentRay, s, i, j);
+//					photo.addToPixels(i, j, new Pixel(currentColor));
+//				}
 				// TODO: Incorporate Models too
 			}
 		}
@@ -96,6 +101,52 @@ public class RayTracer {
 		return photo;
 	}
 
+	public Matrix rayTrace(int i, int j, Ray ray, Matrix accum, Matrix refatt, int level) {
+		Matrix bestPt = rayFind(ray, i, j);
+		Matrix snrm; Matrix color;
+		Matrix N;
+		if (bestPt != null) {
+			N = Utils.pairwiseMinus(bestPt, bestSphere.getCoordinates());
+			N = N.timesEquals(1 / N.normF());
+			snrm = bestPt.minus(bestSphere.getCoordinates());
+			snrm.timesEquals(1 / snrm.normF());
+			Material currentMaterial = bestSphere.getMaterial();
+			color = Utils.pairwiseProduct(scene.getAmbient(), currentMaterial.getKa());
+			for (Light l : scene.getLights()) {
+				Matrix ptL = l.getCoordinates();
+				Matrix emL = l.getColor();
+				Matrix toL = Utils.pairwiseMinus(ptL, bestPt);
+				toL.timesEquals(1 / toL.normF());
+				if (Utils.dotProduct(snrm, toL) > 0.0) {
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKd(), emL.times(Utils.dotProduct(snrm,  toL))));
+					Matrix toC = rays[i][j].getLocation().minus(bestPt);
+					toC.timesEquals(1 / toC.normF());
+					Matrix spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
+				}
+			}
+			accum = Utils.parwisePlus(accum, Utils.pairwiseProduct(refatt, color));
+			if (level > 0) {
+				Matrix Uinv = ray.getDirection().times(-1);
+				Matrix refR = Utils.pairwiseMinus(N.times(2 * Utils.dotProduct(N, Uinv)), Uinv);
+				rayTrace(i, j, new Ray(bestPt, refR), accum, Utils.pairwiseProduct(Kr, refatt), level - 1);
+			}
+		}
+		return accum;
+	}
+
+	public Matrix rayFind(Ray r, int i, int j) {
+		Matrix currentPt = null;
+		for (Sphere s : spheres) {
+			currentPt = raySphereTest(r, s, i, j);
+		}
+		return currentPt;
+	}
+
+	public void sphereTest(Ray r, Sphere s) {
+		
+	}
+
 	public Matrix raySphereRGB(Ray r, Sphere s, int i, int j) {
 		Matrix currentPt = raySphereTest(rays[i][j], s, i, j);
 		Matrix snrm; Matrix color;
@@ -117,6 +168,8 @@ public class RayTracer {
 					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
 				}
 			}
+			bestSphere = s;
+			bestPt = r.getLocation().plus(r.getDirection().times(distances[i][j]));
 			return color;
 		}
 		return null;
@@ -188,6 +241,7 @@ public class RayTracer {
 				d = Math.sqrt(disc);
 				t = v - d;
 				distances[i][j] = t;
+				bestSphere = sphere;
 				pt = ray.getLocation().plus(ray.getDirection().times(t));
 			}
 		}

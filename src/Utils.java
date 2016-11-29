@@ -13,17 +13,17 @@ public class Utils {
 	}
 
 	public static String MatrixToStringOneLine(Matrix m) {
-		String matrix = "";
+		String matrixString = "";
 		for (int j = 0; j < m.getRowDimension() - 1; j++) {
 			for (int i = 0; i < m.getColumnDimension(); i++) {
-				matrix += m.get(j, i) + " ";
+				matrixString += m.get(j, i) + " ";
 			}
-			matrix += ", ";
+			matrixString += ", ";
 		}
 		for (int i = 0; i < m.getColumnDimension(); i++) {
-			matrix += m.get(m.getRowDimension() - 1, i) + " ";
+			matrixString += m.get(m.getRowDimension() - 1, i) + " ";
 		}
-		return matrix;
+		return matrixString;
 	}
 
 	public static double dotProduct(Matrix m1, Matrix m2) {
@@ -34,6 +34,13 @@ public class Utils {
 		double a = m1.get(0, 0) * m2.get(0, 0);
 		double b = m1.get(1, 0) * m2.get(1, 0);
 		double c = m1.get(2, 0) * m2.get(2, 0);
+		return new Matrix(new double[][] { {a}, {b}, {c} });
+	}
+
+	public static Matrix parwisePlus(Matrix m1, Matrix m2) {
+		double a = m1.get(0, 0) + m2.get(0, 0);
+		double b = m1.get(1, 0) + m2.get(1, 0);
+		double c = m1.get(2, 0) + m2.get(2, 0);
 		return new Matrix(new double[][] { {a}, {b}, {c} });
 	}
 
