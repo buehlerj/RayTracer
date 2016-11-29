@@ -9,7 +9,8 @@ public class Ray {
 	Matrix bestPtSphere = null;
 
 	Double bestTModel = null;
-	Sphere bestModel = null;
+	Model bestModel = null;
+	Face bestFace = null;
 	Matrix bestPtModel = null;
 
 	Ray() {
@@ -70,12 +71,20 @@ public class Ray {
 		this.bestTModel = bestTModel;
 	}
 
-	public Sphere getBestModel() {
+	public Model getBestModel() {
 		return bestModel;
 	}
 
-	public void setBestModel(Sphere bestModel) {
+	public void setBestModel(Model bestModel) {
 		this.bestModel = bestModel;
+	}
+
+	public Face getBestFace() {
+		return bestFace;
+	}
+
+	public void setBestFace(Face bestFace) {
+		this.bestFace = bestFace;
 	}
 
 	public Matrix getBestPtModel() {

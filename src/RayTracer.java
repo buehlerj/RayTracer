@@ -73,15 +73,59 @@ public class RayTracer {
 				}
 
 				if (ray.getBestTModel() != null && (ray.getBestTSphere() == null || ray.getBestTModel() < ray.getBestTSphere())) {
-					photo.addToPixels(i, j, new Pixel(0, 1, 0));
+					rgb = new Matrix(3, 1);
+					currentPixelValues = rayTraceModels(i, j, ray, rgb, scene.getAmbient(), recursionLevel);
+					photo.addToPixels(i, j, new Pixel(currentPixelValues));
 				}
 			}
 		}
 		return photo;
 	}
 
+	public Matrix rayTraceModels(int i, int j, Ray ray, Matrix accum, Matrix refatt, int level) {
+		Material currentMaterial;
+		Matrix snrm; Matrix color;
+		Matrix emL; Matrix toL;
+		Matrix toC; Matrix spR;
+		double NdotL;
+		Face bestFace = ray.getBestFace();
+		Model bestModel = ray.getBestModel();
+		if (materialPixels[i][j] != null) {
+			Vertex vertex1 = bestModel.getVertices().get(bestFace.getVertexIndices().get(0));
+			Vertex vertex2 = bestModel.getVertices().get(bestFace.getVertexIndices().get(1));
+			Matrix v1 = new Matrix(new double[][] { {vertex1.getX()}, {vertex1.getY()}, {vertex1.getZ()} });
+			Matrix v2 = new Matrix(new double[][] { {vertex2.getX()}, {vertex2.getY()}, {vertex2.getZ()} });
+			snrm = Vertex.crossProduct(v1, v2);
+			snrm.timesEquals(1 / snrm.normF());
+			currentMaterial = materialPixels[i][j];
+			color = Utils.pairwiseProduct(scene.getAmbient(), currentMaterial.getKa());
+			for (Light l : scene.getLights()) {
+				emL = l.getColor();
+				toL = Utils.pairwiseMinus(l.getCoordinates(), ray.getBestPtModel());
+				toL.timesEquals(1 / toL.normF());
+				NdotL = Utils.dotProduct(snrm,  toL);
+				if (NdotL > 0.0) {
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKd(), emL.times(Utils.dotProduct(snrm,  toL))));
+					toC = rays[i][j].getLocation().minus(ray.getBestPtModel());
+					toC.timesEquals(1 / toC.normF());
+					spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
+					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
+				}
+			}
+			accum = Utils.pairwisePlus(accum, Utils.pairwiseProduct(refatt,  color));
+		}
+		return accum;
+	}
+
 	public Matrix rayTraceSpheres(int i, int j, Ray ray, Matrix accum, Matrix refatt, int level) {
+		Material currentMaterial;
 		Matrix snrm; Matrix color; Matrix N;
+		Matrix emL; Matrix toL;
+		Matrix toC; Matrix spR;
+		Matrix Uinv;
+		Matrix refR;
+		double NdotL;
+
 		rayFindSpheres(ray, i, j);
 
 		if (ray.getBestTSphere() != null) {
@@ -89,25 +133,25 @@ public class RayTracer {
 			N = N.timesEquals(1 / N.normF());
 			snrm = ray.getBestPtSphere().minus(ray.getBestSphere().getCoordinates());
 			snrm.timesEquals(1 / snrm.normF());
-			Material currentMaterial = ray.getBestSphere().getMaterial();
+			currentMaterial = ray.getBestSphere().getMaterial();
 			color = Utils.pairwiseProduct(scene.getAmbient(), currentMaterial.getKa());
 			for (Light l : scene.getLights()) {
-				Matrix emL = l.getColor();
-				Matrix toL = Utils.pairwiseMinus(l.getCoordinates(), ray.getBestPtSphere());
+				emL = l.getColor();
+				toL = Utils.pairwiseMinus(l.getCoordinates(), ray.getBestPtSphere());
 				toL.timesEquals(1 / toL.normF());
-				double NdotL = Utils.dotProduct(snrm, toL);
+				NdotL = Utils.dotProduct(snrm, toL);
 				if (NdotL > 0.0) {
 					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKd(), emL.times(Utils.dotProduct(snrm,  toL))));
-					Matrix toC = rays[i][j].getLocation().minus(ray.getBestPtSphere());
+					toC = rays[i][j].getLocation().minus(ray.getBestPtSphere());
 					toC.timesEquals(1 / toC.normF());
-					Matrix spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
+					spR = snrm.times(2 * Utils.dotProduct(snrm, toL)).minus(toL);
 					color.plusEquals(Utils.pairwiseProduct(currentMaterial.getKs(), emL.times(Math.pow(Utils.dotProduct(toC, spR), PhongConstant))));
 				}
 			}
-			accum = Utils.parwisePlus(accum, Utils.pairwiseProduct(refatt, color));
+			accum = Utils.pairwisePlus(accum, Utils.pairwiseProduct(refatt, color));
 			if (level > 0) {
-				Matrix Uinv = ray.getDirection().times(-1);
-				Matrix refR = Utils.pairwiseMinus(N.times(2 * Utils.dotProduct(N, Uinv)), Uinv);
+				Uinv = ray.getDirection().times(-1);
+				refR = Utils.pairwiseMinus(N.times(2 * Utils.dotProduct(N, Uinv)), Uinv);
 				rayTraceSpheres(i, j, new Ray(ray.getBestPtSphere(), refR), accum, Utils.pairwiseProduct(Kr, refatt), level - 1);
 			}
 		}
@@ -165,9 +209,8 @@ public class RayTracer {
 		return null;
 	}
 
-	public Matrix rayModelTest(Ray ray, Model model, int i, int j) {
+	public void rayModelTest(Ray ray, Model model, int i, int j) {
 		double t;
-		Matrix pt = null;
 
 		if (model != null) {
 			Matrix D; Matrix M; Matrix y; Matrix x;
@@ -206,13 +249,14 @@ public class RayTracer {
 				if (beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 					if (ray.getBestTModel() == null || t < ray.getBestTModel()) {
 						ray.setBestTModel(t);
+						ray.setBestFace(f);
+						ray.setBestModel(model);
+						ray.setBestPtModel(ray.getLocation().plus(ray.getDirection().times(t)));
 						materialPixels[i][j] = getMaterial(model.getMaterialName());
 					}
 				}
 			}
 		}
-
-		return pt;
 	}
 
 	public Matrix raySphereTest(Ray ray, Sphere sphere, int i, int j) {

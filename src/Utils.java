@@ -37,7 +37,7 @@ public class Utils {
 		return new Matrix(new double[][] { {a}, {b}, {c} });
 	}
 
-	public static Matrix parwisePlus(Matrix m1, Matrix m2) {
+	public static Matrix pairwisePlus(Matrix m1, Matrix m2) {
 		double a = m1.get(0, 0) + m2.get(0, 0);
 		double b = m1.get(1, 0) + m2.get(1, 0);
 		double c = m1.get(2, 0) + m2.get(2, 0);
