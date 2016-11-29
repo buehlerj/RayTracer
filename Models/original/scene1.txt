@@ -1,0 +1,11 @@
+eye 4 4 4 
+look 0 0 0 
+up 0 0 1 
+d 2 
+bounds -1 -1 1 1 
+res 256 256 
+ambient 0.5 0.5 0.5 
+light 0 4 4 1 1.00 1.00 1.00 
+light 4 0 4 1 1.00 1.00 1.00 
+sphere -1.5 -0.5 2.5 0.5 1.0 0.0 1.0 
+model 0.0 0.0 0.0 1.0 0.0 0.0 0.0 ellelltri.obj
