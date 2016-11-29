@@ -12,39 +12,39 @@ public class Pixel {
 
 	Pixel(Matrix color) {
 		if (color != null) {
-			if (color.get(0, 0) > 1) {
-				this.r = (int) color.get(0, 0);
-				this.g = (int) color.get(1, 0);
-				this.b = (int) color.get(2, 0);
+			if (color.get(0, 0) > 1 && color.get(1, 0) > 1 && color.get(2, 0) > 1) {
+				this.r = Math.min(255, (int) color.get(0, 0));
+				this.g = Math.min(255, (int) color.get(1, 0));
+				this.b = Math.min(255, (int) color.get(2, 0));
 			} else {
-				this.r = (int) (color.get(0, 0) * 255);
-				this.g = (int) (color.get(1, 0) * 255);
-				this.b = (int) (color.get(2, 0) * 255);
+				this.r = Math.min(255, (int) (color.get(0, 0) * 255));
+				this.g = Math.min(255, (int) (color.get(1, 0) * 255));
+				this.b = Math.min(255, (int) (color.get(2, 0) * 255));
 			}
 		}
 	}
 
 	Pixel(int r, int g, int b) {
-		if (r > 1) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		if (r > 1 && g > 1 && b > 1) {
+		this.r = Math.min(255, r);
+		this.g = Math.min(255, g);
+		this.b = Math.min(255, b);
 		} else {
-			this.r = r * 255;
-			this.g = g * 255;
-			this.b = b * 255;
+			this.r = Math.min(255, r * 255);
+			this.g = Math.min(255, g * 255);
+			this.b = Math.min(255, b * 255);
 		}
 	}
 
 	Pixel(double r, double g, double b) {
-		if (r > 1) {
-			this.r = (int) Math.round(r);
-			this.g = (int) Math.round(g);
-			this.b = (int) Math.round(b);
+		if (r > 1 && g > 1 && b > 1) {
+			this.r = Math.min(255, (int) Math.round(r));
+			this.g = Math.min(255, (int) Math.round(g));
+			this.b = Math.min(255, (int) Math.round(b));
 		} else {
-			this.r = (int) Math.round(r * 255);
-			this.g = (int) Math.round(g * 255);
-			this.b = (int) Math.round(b * 255);
+			this.r = Math.min(255, (int) Math.round(r * 255));
+			this.g = Math.min(255, (int) Math.round(g * 255));
+			this.b = Math.min(255, (int) Math.round(b * 255));
 		}
 	}
 
@@ -69,9 +69,9 @@ public class Pixel {
 	}
 
 	public void modify(int r, int g, int b) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		this.r = Math.min(255, r);
+		this.g = Math.min(255, g);
+		this.b = Math.min(255, b);
 	}
 
 	public String toString() {
