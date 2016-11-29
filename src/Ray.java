@@ -4,6 +4,10 @@ public class Ray {
 	Matrix location;
 	Matrix direction;
 
+	Double bestT = null;
+	Sphere bestSphere = null;
+	Matrix bestPt = null;
+
 	Ray() {
 		location = new Matrix(1, 3);
 		direction = new Matrix(1, 3);
@@ -28,6 +32,30 @@ public class Ray {
 
 	public void setDirection(Matrix direction) {
 		this.direction = direction;
+	}
+
+	public Double getBestT() {
+		return bestT;
+	}
+
+	public void setBestT(Double bestT) {
+		this.bestT = bestT;
+	}
+
+	public Sphere getBestSphere() {
+		return bestSphere;
+	}
+
+	public void setBestSphere(Sphere bestSphere) {
+		this.bestSphere = bestSphere;
+	}
+
+	public Matrix getBestPt() {
+		return bestPt;
+	}
+
+	public void setBestPt(Matrix bestPt) {
+		this.bestPt = bestPt;
 	}
 
 	public String toString() {
