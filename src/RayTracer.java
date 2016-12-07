@@ -31,6 +31,14 @@ public class RayTracer {
 		return cameraRead;
 	}
 
+	public boolean setupCamera(Camera camera) {
+		this.camera = camera;
+		rays = new Ray[camera.getRes()[0]][camera.getRes()[1]];
+		distances = new Double[camera.getRes()[0]][camera.getRes()[1]];
+		materialPixels = new Material[camera.getRes()[0]][camera.getRes()[1]];
+		return true;
+	}
+
 	public boolean setupScene(String inputFileName) {
 		boolean sceneAmbient = scene.read(inputFileName);
 		models = scene.readModels(inputFileName);
@@ -43,6 +51,11 @@ public class RayTracer {
 			}
 		}
 		return sceneAmbient;
+	}
+
+	public boolean setupScene(Scene scene) {
+		this.scene = scene;
+		return true;
 	}
 
 	public Picture capturePicture() {
@@ -65,6 +78,9 @@ public class RayTracer {
 				ray = rays[i][jIndex];
 				rgb = new Matrix(3, 1);
 				currentPixelValues = rayTraceSpheres(i, jIndex, ray, rgb, scene.getAmbient(), recursionLevel);
+				currentPixelValues.set(0, 0, Math.min(255, currentPixelValues.get(0, 0)));
+				currentPixelValues.set(1, 0, Math.min(255, currentPixelValues.get(1, 0)));
+				currentPixelValues.set(2, 0, Math.min(255, currentPixelValues.get(2, 0)));
 				photo.addToPixels(i, j, new Pixel(currentPixelValues));
 
 				for (Model m : models) {
@@ -74,6 +90,9 @@ public class RayTracer {
 				if (ray.getBestTModel() != null && (ray.getBestTSphere() == null || ray.getBestTModel() < ray.getBestTSphere())) {
 					rgb = new Matrix(3, 1);
 					currentPixelValues = rayTraceModels(i, j, ray, rgb, scene.getAmbient(), recursionLevel);
+					currentPixelValues.set(0, 0, Math.min(255, currentPixelValues.get(0, 0)));
+					currentPixelValues.set(1, 0, Math.min(255, currentPixelValues.get(1, 0)));
+					currentPixelValues.set(2, 0, Math.min(255, currentPixelValues.get(2, 0)));
 					photo.addToPixels(i, j, new Pixel(currentPixelValues));
 				}
 			}
@@ -172,7 +191,7 @@ public class RayTracer {
 		if (disc > 0) {
 			double d = Math.sqrt(disc);
 			double tval = v - d;
-			if (ray.getBestTSphere() == null || tval < ray.getBestTSphere()) {
+			if (ray.getBestTSphere() == null || tval > ray.getBestTSphere()) {
 				pt = ray.getLocation().plus(ray.getDirection().times(tval));
 				ray.setBestTSphere(d);
 				ray.setBestSphere(sphere);

@@ -28,6 +28,20 @@ public class Camera {
 		cameraV = new Matrix(1, 3);
 	}
 
+	public Camera(Matrix eye, Matrix look, Matrix up, double d, double L, double B, double R, double T, int resx, int resy) {
+		this.eye = eye;
+		this.look = look;
+		this.up = up;
+		this.d = d;
+		this.boundL = L;
+		this.boundB = B;
+		this.boundR = R;
+		this.boundT = T;
+		this.resx = resx;
+		this.resy = resy;
+		setupCameraVertices();
+	}
+
 	public boolean read(String inputFileName) {
 		File inputFile = new File(inputFileName);
 		try {
@@ -66,12 +80,16 @@ public class Camera {
 			System.err.println("Problem Read file: " + inputFileName);
 			return false;
 		}
+		setupCameraVertices();
+		return true;
+	}
+
+	public void setupCameraVertices() {
 		cameraW = eye.minus(look);
 		cameraU = Vertex.crossProduct(up, cameraW);
 		cameraW = cameraW.timesEquals(1 / cameraW.normF());
 		cameraU = cameraU.timesEquals(1 / cameraU.normF());
 		cameraV = Vertex.crossProduct(cameraW, cameraU);
-		return true;
 	}
 
 	public Matrix getCameraW() {

@@ -1,0 +1,21 @@
+eye 0 0 10
+look 0 0 0
+up 0 1 0
+d 1.7
+bounds -1 -1 1 1
+res 256 256
+ambient 0.6 0.6 0.6
+light 3 3 3 1 1.0 1.0 1.0
+light -3 3 3 1 1.0 1.0 1.0
+# Red
+sphere 2 3.46 0 1.5 1.0 0.0 0.0 
+# Orange
+sphere -2 3.46 0 1.5 1.0 0.65 0.0 
+# Yellow
+sphere -4 0 0 1.5 1.0 1.0 0.0 
+# Green
+sphere -2 -3.46 0 1.5 0.0 1.0 0.0 
+# Blue
+sphere 2 -3.46 0 1.5 0.0 0.0 1.0 
+# Purple
+sphere 4 0 0 1.5 1.0 0.0 1.0 

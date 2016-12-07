@@ -12,15 +12,9 @@ public class Pixel {
 
 	Pixel(Matrix color) {
 		if (color != null) {
-			if (color.get(0, 0) > 1 && color.get(1, 0) > 1 && color.get(2, 0) > 1) {
-				this.r = Math.min(255, (int) color.get(0, 0));
-				this.g = Math.min(255, (int) color.get(1, 0));
-				this.b = Math.min(255, (int) color.get(2, 0));
-			} else {
-				this.r = Math.min(255, (int) (color.get(0, 0) * 255));
-				this.g = Math.min(255, (int) (color.get(1, 0) * 255));
-				this.b = Math.min(255, (int) (color.get(2, 0) * 255));
-			}
+			this.r = Math.min(255, (int) (color.get(0, 0) * 255));
+			this.g = Math.min(255, (int) (color.get(1, 0) * 255));
+			this.b = Math.min(255, (int) (color.get(2, 0) * 255));
 		}
 	}
 
@@ -64,8 +58,24 @@ public class Pixel {
 		this.index = index;
 	}
 
+	public int getR() {
+		return r;
+	}
+
+	public int getG() {
+		return g;
+	}
+
+	public int getB() {
+		return b;
+	}
+
 	public boolean equals(Pixel a) {
 		return r == a.r && g == a.g && b == a.b;
+	}
+
+	public boolean isEmpty() {
+		return r == 0 && g == 0 && g == 0;
 	}
 
 	public void modify(int r, int g, int b) {

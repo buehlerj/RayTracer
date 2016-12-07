@@ -11,7 +11,12 @@ public class Scene {
 
 	public Scene() {
 		ambient = new Matrix(1, 3);
-		lights = new ArrayList<Light>();
+		lights = new ArrayList<>();
+	}
+
+	public Scene(Matrix ambient) {
+		this.ambient = ambient;
+		lights = new ArrayList<>();
 	}
 
 	public boolean read(String inputFileName) {
@@ -106,8 +111,12 @@ public class Scene {
 		return lights;
 	}
 
-	public void setLights(ArrayList<Light> lights) {
-		this.lights = lights;
+	public void addLight(Light light) {
+		lights.add(light);
+	}
+
+	public void removeLight(Light light) {
+		lights.remove(light);
 	}
 
 	public String toString() {

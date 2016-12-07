@@ -37,6 +37,18 @@ public class Picture {
 		return true;
 	}
 
+	public void addStars() {
+		int numberOfPixels = width * height;
+		double random;
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				random = Math.random() * numberOfPixels;
+				if (pixels[i][j].isEmpty() && random < (numberOfPixels / 200))
+					pixels[i][j].modify(255, 255, 255);
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		String allPixelsString = "";
