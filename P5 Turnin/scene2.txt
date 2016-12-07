@@ -3,7 +3,7 @@ look 0 0 0
 up 0 1 0
 d 1.7
 bounds -1 -1 1 1
-res 256 256
+res 640 640
 ambient 0.6 0.6 0.6
 light 3 3 3 1 1.0 1.0 1.0
 light -3 3 3 1 1.0 1.0 1.0
