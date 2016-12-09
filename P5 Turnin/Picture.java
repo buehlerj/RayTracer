@@ -39,10 +39,18 @@ public class Picture {
 	}
 
 	public void addStars() {
+		int starSize = 0;
 		int hue = 0;
 		double random;
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
+		if (height <= 720) {
+			starSize = 1;
+		} else if (height <= 1080) {
+			starSize = 2;
+		} else {
+			starSize = 3;
+		}
+		for (int i = 0; i < height; i += starSize) {
+			for (int j = 0; j < width; j+= starSize) {
 				random = Math.random() * 100;
 				if (pixels[i][j].isEmpty() && random < 1) {
 					random = Math.random();
@@ -55,7 +63,11 @@ public class Picture {
 					} else {
 						hue = 64;
 					}
-					pixels[i][j].modify(hue, hue, hue);
+					for (int q = 0; q < starSize; q++) {
+						for (int u = 0; u < starSize; u++) {
+							pixels[i + q][j + u].modify(hue, hue, hue);
+						}
+					}
 				}
 			}
 		}

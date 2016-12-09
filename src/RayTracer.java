@@ -515,6 +515,8 @@ public class RayTracer {
 		double boundT = .5625;
 		int resx = 1920;
 		int resy = 1080;
+//		resx = 3840;
+//		resy = 2160;
 
 		Camera camera = new Camera(eye, look, up, d, boundL, boundB, boundR, boundT, resx, resy);
 		rayTracer.setupCamera(camera);
