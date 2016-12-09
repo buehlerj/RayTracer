@@ -39,27 +39,30 @@ public class Picture {
 	}
 
 	public void addStars() {
-		int numberOfPixels = width * height;
+		int hue = 0;
 		double random;
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				random = Math.random() * numberOfPixels;
-				if (pixels[i][j].isEmpty() && random < (numberOfPixels / 200))
-					pixels[i][j].modify(255, 255, 255);
+				random = Math.random() * 100;
+				if (pixels[i][j].isEmpty() && random < 1) {
+					random = Math.random();
+					if (random >= .75) {
+						hue = 255;
+					} else if (random >= .5 && random < .75) {
+						hue = 200;
+					} else if (random >= .25 && random < .5) {
+						hue = 128;
+					} else {
+						hue = 64;
+					}
+					pixels[i][j].modify(hue, hue, hue);
+				}
 			}
 		}
 	}
 
 	@Override
 	public String toString() {
-		return Arrays.deepToString(pixels).replace("[", "").replace("]", "").replace(",", "");
-//		String allPixelsString = "";
-//		for (int i = 0; i < height; i++) {
-//			for (int j = 0; j < width; j++) {
-//				allPixelsString += pixels[i][j] + " ";
-//			}
-//			allPixelsString += "\n";
-//		}
-//		return allPixelsString;
+		return Arrays.deepToString(pixels).replace("[", "").replace("]", "\n").replace(",", "");
 	}
 }
