@@ -28,7 +28,8 @@ public class Camera {
 		cameraV = new Matrix(1, 3);
 	}
 
-	public Camera(Matrix eye, Matrix look, Matrix up, double d, double L, double B, double R, double T, int resx, int resy) {
+	public Camera(Matrix eye, Matrix look, Matrix up, double d, double L, double B, double R, double T, int resx,
+			int resy) {
 		this.eye = eye;
 		this.look = look;
 		this.up = up;

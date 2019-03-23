@@ -4,9 +4,9 @@ public class Material {
 	String name = "";
 	Model model;
 	double Ns = 0;
-	Matrix Ka = new Matrix(new double[][] { {.9}, {.9}, {.9} });
-	Matrix Kd = new Matrix(new double[][] { {.9}, {.9}, {.9} });
-	Matrix Ks = new Matrix(new double[][] { {.9}, {.9}, {.9} });
+	Matrix Ka = new Matrix(new double[][] { { .9 }, { .9 }, { .9 } });
+	Matrix Kd = new Matrix(new double[][] { { .9 }, { .9 }, { .9 } });
+	Matrix Ks = new Matrix(new double[][] { { .9 }, { .9 }, { .9 } });
 	double d = 0;
 	double illum;
 
@@ -43,7 +43,7 @@ public class Material {
 	}
 
 	public void setKa(double r, double g, double b) {
-		Ka = new Matrix(new double[][] { {r}, {g}, {b} });
+		Ka = new Matrix(new double[][] { { r }, { g }, { b } });
 	}
 
 	public Matrix getKd() {
@@ -51,7 +51,7 @@ public class Material {
 	}
 
 	public void setKd(double r, double g, double b) {
-		Kd = new Matrix(new double[][] { {r}, {g}, {b} });
+		Kd = new Matrix(new double[][] { { r }, { g }, { b } });
 	}
 
 	public Matrix getKs() {
@@ -59,7 +59,7 @@ public class Material {
 	}
 
 	public void setKs(double r, double g, double b) {
-		Ks = new Matrix(new double[][] { {r}, {g}, {b} });
+		Ks = new Matrix(new double[][] { { r }, { g }, { b } });
 	}
 
 	public double getD() {

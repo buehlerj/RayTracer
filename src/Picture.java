@@ -18,8 +18,9 @@ public class Picture {
 	}
 
 	public boolean write(String outputFileName, String nameModifier) {
-		if (nameModifier.length() > 0)
+		if (nameModifier.length() > 0) {
 			nameModifier = "_" + nameModifier;
+		}
 		String[] fileSplit = outputFileName.split("\\.");
 		String newFileName = "";
 		for (int i = 0; i < fileSplit.length - 1; i++) {
@@ -50,7 +51,7 @@ public class Picture {
 			starSize = 3;
 		}
 		for (int i = 0; i < height; i += starSize) {
-			for (int j = 0; j < width; j+= starSize) {
+			for (int j = 0; j < width; j += starSize) {
 				random = Math.random() * 100;
 				if (pixels[i][j].isEmpty() && random < 1) {
 					random = Math.random();

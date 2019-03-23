@@ -74,8 +74,7 @@ public class Sphere {
 	}
 
 	public String toString() {
-		String sphere = "";
-		sphere += Utils.MatrixToString(coordinates);
+		String sphere = Utils.MatrixToString(coordinates);
 		sphere += radius + " ";
 		sphere += color.get(0, 0) + " ";
 		sphere += color.get(1, 0) + " ";

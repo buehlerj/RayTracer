@@ -20,9 +20,9 @@ public class Pixel {
 
 	Pixel(int r, int g, int b) {
 		if (r > 1 && g > 1 && b > 1) {
-		this.r = Math.min(255, r);
-		this.g = Math.min(255, g);
-		this.b = Math.min(255, b);
+			this.r = Math.min(255, r);
+			this.g = Math.min(255, g);
+			this.b = Math.min(255, b);
 		} else {
 			this.r = Math.min(255, r * 255);
 			this.g = Math.min(255, g * 255);

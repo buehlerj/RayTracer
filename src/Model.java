@@ -35,7 +35,7 @@ public class Model {
 		File inputFile = new File(inputFileName);
 		try {
 			Scanner input = new Scanner(inputFile);
-			switch(extension) {
+			switch (extension) {
 			case "ply":
 				boolean readingHeader = true;
 				int vertexCount = 0;
@@ -44,12 +44,15 @@ public class Model {
 					if (readingHeader) {
 						String next = input.nextLine();
 						header += next + "\n";
-						if (next.equals("end_header"))
+						if (next.equals("end_header")) {
 							readingHeader = false;
-						if (next.contains("element vertex"))
+						}
+						if (next.contains("element vertex")) {
 							numberOfVertices = Integer.valueOf(next.split("\\s+")[2]);
-						if (next.contains("element face"))
+						}
+						if (next.contains("element face")) {
 							numberOfFaces = Integer.valueOf(next.split("\\s+")[2]);
+						}
 					} else {
 						if (vertexCount < numberOfVertices) {
 							Vertex inputVertex = new Vertex(input.nextDouble(), input.nextDouble(), input.nextDouble());
@@ -67,8 +70,9 @@ public class Model {
 									faceCount++;
 								}
 							}
-						} else
+						} else {
 							input.nextLine();
+						}
 					}
 				}
 				input.close();
@@ -76,7 +80,7 @@ public class Model {
 			case "obj":
 				while (input.hasNext()) {
 					String next = input.next();
-					switch(next) {
+					switch (next) {
 					case "#":
 						break;
 					case "mtllib":
@@ -96,8 +100,9 @@ public class Model {
 						String line = input.nextLine();
 						for (String s : line.split("\\s")) {
 							String vertexIndex = s.split("//")[0];
-							if (!vertexIndex.isEmpty())
+							if (!vertexIndex.isEmpty()) {
 								inputFace.addToVertexIndices(Integer.valueOf(s.split("//")[0]) - 1);
+							}
 						}
 						faces.add(inputFace);
 						break;
@@ -124,7 +129,7 @@ public class Model {
 				materialInput = new Scanner(inputMaterialFile);
 				while (materialInput.hasNext()) {
 					String next = materialInput.next();
-					switch(next) {
+					switch (next) {
 					case "#":
 						next = materialInput.nextLine();
 						break;
@@ -168,8 +173,9 @@ public class Model {
 
 	@SuppressWarnings("resource")
 	public boolean write(String outputFileName, String nameModifier) {
-		if (nameModifier.length() > 0)
+		if (nameModifier.length() > 0) {
 			nameModifier = "_" + nameModifier;
+		}
 		String[] fileSplit = outputFileName.split("\\.");
 		String newFileName = "";
 		for (int i = 0; i < fileSplit.length - 1; i++) {
@@ -223,8 +229,8 @@ public class Model {
 		System.out.println(numberOfVertices + " vertices, " + numberOfFaces + " polygons");
 		System.out.println("Mean Vertex = " + getAverageVertex().toStringVertex());
 		System.out.println("Bounding Box: " + df.format(minVertex.getX()) + " <= x <= " + df.format(maxVertex.getX())
-		+ ", " + df.format(minVertex.getY()) + " <= y <= " + df.format(maxVertex.getY()) + ", "
-		+ df.format(minVertex.getZ()) + " <= z <= " + df.format(maxVertex.getZ()));
+				+ ", " + df.format(minVertex.getY()) + " <= y <= " + df.format(maxVertex.getY()) + ", "
+				+ df.format(minVertex.getZ()) + " <= z <= " + df.format(maxVertex.getZ()));
 		System.out.println("Standard Deviations: x = " + df.format(standardDeviation.getX()) + ", y = "
 				+ df.format(standardDeviation.getY()) + ", z = " + df.format((standardDeviation.getZ())));
 	}
@@ -232,8 +238,9 @@ public class Model {
 	private Vertex getAverageVertex() {
 		Vertex average = new Vertex();
 		Vertex divisor = new Vertex(numberOfVertices, numberOfVertices, numberOfVertices);
-		for (Vertex vertex : vertices)
+		for (Vertex vertex : vertices) {
 			average.add(vertex);
+		}
 		average.divide(divisor);
 		return average;
 	}
@@ -265,8 +272,7 @@ public class Model {
 		Collections.sort(xValues);
 		Collections.sort(yValues);
 		Collections.sort(zValues);
-		return new Vertex(xValues.get(xValues.size() - 1), yValues.get(yValues.size() - 1),
-				zValues.get(zValues.size() - 1));
+		return new Vertex(xValues.get(xValues.size() - 1), yValues.get(yValues.size() - 1), zValues.get(zValues.size() - 1));
 	}
 
 	private Vertex getStandardDeviationVertex() {
@@ -280,8 +286,9 @@ public class Model {
 		}
 		Vertex standardDeviation = new Vertex();
 		Vertex divisor = new Vertex(numberOfVertices, numberOfVertices, numberOfVertices);
-		for (Vertex vertex : sdVertices)
+		for (Vertex vertex : sdVertices) {
 			standardDeviation.add(vertex);
+		}
 		standardDeviation.divide(divisor);
 		standardDeviation.squareRoot();
 		return standardDeviation;
@@ -341,7 +348,7 @@ public class Model {
 		numberOfFaces = newNumberOfFaces;
 	}
 
-	public void swapYZ(){
+	public void swapYZ() {
 		for (Vertex v : vertices) {
 			double y = v.getY();
 			double z = v.getZ();

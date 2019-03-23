@@ -37,8 +37,7 @@ public class Face {
 	}
 
 	public String toString() {
-		String faces = "";
-		faces += numberOfVertices + " ";
+		String faces = numberOfVertices + " ";
 		for (int index : vertexIndices)
 			faces += index + " ";
 		return faces;

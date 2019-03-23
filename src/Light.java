@@ -42,8 +42,7 @@ public class Light {
 	}
 
 	public String toString() {
-		String light = "";
-		light += Utils.MatrixToString(coordinates);
+		String light = Utils.MatrixToString(coordinates);
 		light += color.get(0, 0) + " ";
 		light += color.get(1, 0) + " ";
 		light += color.get(2, 0);

@@ -26,7 +26,7 @@ public class Scene {
 			Scanner input = new Scanner(inputFile);
 			while (input.hasNextLine()) {
 				keyTerm = input.next();
-				switch(keyTerm) {
+				switch (keyTerm) {
 				case "ambient":
 					ambient = new Matrix(new double[][] { { input.nextDouble() }, { input.nextDouble() }, { input.nextDouble() } });
 					break;
@@ -56,13 +56,12 @@ public class Scene {
 				keyTerm = input.next();
 				switch (keyTerm) {
 				case "model":
-					Model m = new Model(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(),
-							input.nextDouble(), input.nextDouble(), input.nextDouble());
+					Model m = new Model(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
 					m.read(input.next());
 					m.rotateModel();
 					models.add(m);
 					break;
-				default: 
+				default:
 					keyTerm = input.nextLine();
 				}
 			}
@@ -82,7 +81,7 @@ public class Scene {
 			Scanner input = new Scanner(inputFile);
 			while (input.hasNext()) {
 				keyTerm = input.next();
-				switch(keyTerm) {
+				switch (keyTerm) {
 				case "sphere":
 					Sphere sphere = new Sphere(input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble(), input.nextDouble());
 					spheres.add(sphere);
@@ -120,8 +119,7 @@ public class Scene {
 	}
 
 	public String toString() {
-		String sceneString = "";
-		sceneString += "Ambient: " + Utils.MatrixToStringOneLine(ambient) + "\n";
+		String sceneString = "Ambient: " + Utils.MatrixToStringOneLine(ambient) + "\n";
 		for (Light l : lights) {
 			sceneString += "Light:\n";
 			sceneString += "   Coordinates: " + Utils.MatrixToStringOneLine(l.getCoordinates()) + "\n";
